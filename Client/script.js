@@ -126,6 +126,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderSavedApps() {
         const apps = loadApps();
         apps.forEach(app => createAppCard(app));
+
+        // Fetch server-managed apps from apps.json (served by WAMP root)
+        fetch('/apps.json').then(resp => {
+            if (!resp.ok) return [];
+            return resp.json();
+        }).then(serverApps => {
+            (serverApps || []).forEach(sa => {
+                // do not duplicate cards if the same link already exists
+                if (grid.querySelector(`a[href="${sa.link}"]`)) return;
+                createAppCard(sa);
+            });
+        }).catch(() => {
+            // ignore fetch errors (file may not exist)
+        });
     }
 
     // drag/drop features removed per request (uploader removed from HTML)

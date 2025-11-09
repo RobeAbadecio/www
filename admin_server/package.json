@@ -1,0 +1,15 @@
+{
+    "name": "wamp-admin-server",
+    "version": "1.0.0",
+    "description": "Local admin server for managing WAMP www apps (binds to localhost only)",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "adm-zip": "^0.5.9",
+        "express": "^4.18.2",
+        "express-session": "^1.17.3",
+        "multer": "^1.4.5"
+    }
+}

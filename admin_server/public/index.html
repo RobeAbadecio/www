@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin - Local WAMP Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Local Admin</h1>
+        <p>This admin interface is only available on this PC (localhost binding). Provide your credentials to continue.</p>
+
+        <section class="card" id="auth">
+            <form method="POST" action="/admin/login">
+                <label>Username
+          <input name="username" required>
+        </label>
+                <label>Password
+          <input name="password" type="password" required>
+        </label>
+                <div class="actions">
+                    <button type="submit">Sign in</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Upload project (zip)</h2>
+            <p>Upload a .zip and it will be extracted into the WAMP www folder under the given destination name.</p>
+            <form method="POST" action="/admin/upload" enctype="multipart/form-data">
+                <label>Zip file
+          <input type="file" name="projectZip" accept=".zip" required>
+        </label>
+                <label>Destination folder name (optional)
+          <input name="destinationName" placeholder="my-app">
+        </label>
+                <div class="actions">
+                    <button type="submit">Upload and extract</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Add web-app to dashboard</h2>
+            <p>Enter a title and the link relative to WAMP's www (for example: <code>my-app/index.html</code>).</p>
+            <form id="addAppForm" method="POST" action="/admin/add-app">
+                <label>Title
+          <input name="title" required>
+        </label>
+                <label>Link (relative)
+          <input name="link" placeholder="my-app/index.html" required>
+        </label>
+                <div class="actions">
+                    <button type="submit">Add App</button>
+                </div>
+            </form>
+        </section>
+
+        <footer>
+            <p>Remember: server binds to localhost only. To secure it, set ADMIN_USER and ADMIN_PASS environment variables before starting.</p>
+        </footer>
+    </main>
+</body>
+
+</html>
