@@ -4,14 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="title">Robe's Website applications</div>
-    <div class="content">
+    <div class="horizontal-div">
+        <header class="main-title">
+            <h1>Robe's Website Applications</h1>
+            <div class="top-controls">
+                <button id="theme-toggle" aria-label="Toggle theme">Dark</button>
+            </div>
+        </header>
+
+        <main id="apps-grid" class="grid-content">
+            <article class="grid-item" data-app-id="static:guitar_tabs/index.html">
+                <a href="guitar_tabs/index.html">
+                    <h3 class="app-title">Guitar Tabs</h3>
+                    <p class="muted">Simple chord charts and lessons</p>
+                </a>
+            </article>
+
+            <!-- uploader removed -->
+
+        </main>
 
     </div>
+    <script src="script.js"></script>
 </body>
 
 </html>
