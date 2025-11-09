@@ -1,5 +1,14 @@
 [{
     "id": "static-guitar",
     "title": "Guitar Tabs",
-    "link": "guitar_tabs/index.html"
+    "link": "../Applications/guitar_tabs/index.html"
+
+}, {
+    "id": "calculator",
+    "title": "calculator",
+    "link": "../Applications/Calculator/index.htm"
+}, {
+    "id": "Weather_web_app",
+    "title": "weather web app",
+    "link": "../Applications/weather_web/index.html"
 }]
