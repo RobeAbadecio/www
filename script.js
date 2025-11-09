@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
     const GRID_KEY = 'dashboard-apps-v1';
     const grid = document.getElementById('apps-grid');
-    const drop = document.getElementById('project-drop');
-    const folderInput = document.getElementById('folder-input');
 
     function loadApps() {
         const raw = localStorage.getItem(GRID_KEY);
@@ -48,17 +46,28 @@ document.addEventListener('DOMContentLoaded', function() {
             titleEl.textContent = newTitle;
             const apps = loadApps();
             const idx = apps.findIndex(a => a.id === id);
-            if (idx !== -1) { apps[idx].title = newTitle;
-                saveApps(apps); }
+            if (idx !== -1) {
+                apps[idx].title = newTitle;
+                saveApps(apps);
+            }
             cleanup();
         }
 
-        function onKey(e) { if (e.key === 'Enter') { e.preventDefault();
-                titleEl.blur(); } if (e.key === 'Escape') { e.preventDefault();
-                titleEl.blur(); } }
+        function onKey(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                titleEl.blur();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                titleEl.blur();
+            }
+        }
 
-        function cleanup() { titleEl.removeEventListener('blur', finish);
-            document.removeEventListener('keydown', onKey); }
+        function cleanup() {
+            titleEl.removeEventListener('blur', finish);
+            document.removeEventListener('keydown', onKey);
+        }
 
         titleEl.addEventListener('blur', finish);
         document.addEventListener('keydown', onKey);
@@ -70,22 +79,39 @@ document.addEventListener('DOMContentLoaded', function() {
         art.dataset.appId = app.id;
         const link = document.createElement('a');
         link.className = 'app-link';
-        if (app.link) { link.href = app.link;
+        if (app.link) {
+            link.href = app.link;
             link.target = '_blank';
-            link.rel = 'noopener'; } else { link.href = '#';
-            link.addEventListener('click', function(e) { if (!app.link) { e.preventDefault();
-                    alert('This project is stored locally in your browser. To open it from the server, place the project inside your WAMP www folder and refresh.'); } }); }
+            link.rel = 'noopener';
+        } else {
+            link.href = '#';
+            link.addEventListener('click', function(e) {
+                if (!app.link) {
+                    e.preventDefault();
+                    alert('This project is stored locally in your browser. To open it from the server, place the project inside your WAMP www folder and refresh.');
+                }
+            });
+        }
 
         const title = document.createElement('h3');
         title.className = 'app-title';
         title.textContent = app.title || 'Untitled project';
         title.title = 'Double-click to rename';
         title.tabIndex = 0;
-        title.addEventListener('dblclick', (ev) => { ev.stopPropagation();
-            enableEditing(title, app.id); });
-        title.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault();
-                title.blur(); } if (ev.key === 'Escape') { ev.preventDefault();
-                title.blur(); } });
+        title.addEventListener('dblclick', (ev) => {
+            ev.stopPropagation();
+            enableEditing(title, app.id);
+        });
+        title.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Enter') {
+                ev.preventDefault();
+                title.blur();
+            }
+            if (ev.key === 'Escape') {
+                ev.preventDefault();
+                title.blur();
+            }
+        });
 
         const meta = document.createElement('div');
         meta.className = 'card-meta muted';
@@ -97,70 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return art;
     }
 
-    function renderSavedApps() { const apps = loadApps();
-        apps.forEach(app => createAppCard(app)); }
-
-    function handleDropItems(items) {
+    function renderSavedApps() {
         const apps = loadApps();
-        const promises = [];
-        for (let i = 0; i < items.length; i++) {
-            const it = items[i];
-            if (it.kind === 'file' && typeof it.webkitGetAsEntry === 'function') {
-                const entry = it.webkitGetAsEntry();
-                if (entry && entry.isDirectory) { promises.push(traverseDirectory(entry)); }
-            }
-        }
-        Promise.all(promises).then(results => {
-            results.forEach(res => { const id = genId(); const a = { id, title: res.name, meta: `${res.fileCount} files` };
-                apps.push(a);
-                createAppCard(a); });
-            saveApps(apps);
-        });
+        apps.forEach(app => createAppCard(app));
     }
 
-    function traverseDirectory(directoryEntry) {
-        return new Promise((resolve) => {
-            const reader = directoryEntry.createReader();
-            let entries = [];
-
-            function read() {
-                reader.readEntries(function(results) {
-                    if (!results.length) { const fileCount = entries.filter(e => !e.isDirectory).length;
-                        resolve({ name: directoryEntry.name, fileCount }); } else { entries = entries.concat(Array.from(results));
-                        read(); }
-                }, () => resolve({ name: directoryEntry.name, fileCount: 0 }));
-            }
-            read();
-        });
-    }
-
-    // Fallback: handle folder input (webkitdirectory)
-    folderInput.addEventListener('change', function(e) {
-        const files = Array.from(e.target.files || []);
-        if (!files.length) return;
-        const first = files[0];
-        const rel = first.webkitRelativePath || first.name;
-        const folder = rel.split('/')[0];
-        const id = genId();
-        const apps = loadApps();
-        const a = { id, title: folder, meta: `${files.length} files` };
-        apps.push(a);
-        createAppCard(a);
-        saveApps(apps);
-        folderInput.value = '';
-    });
-
-    // Drop UI events
-    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, function(e) { e.preventDefault();
-        drop.classList.add('dragover'); }));
-    ['dragleave', 'drop', 'dragend'].forEach(ev => drop.addEventListener(ev, function(e) { if (ev === 'drop') e.preventDefault();
-        drop.classList.remove('dragover'); }));
-
-    drop.addEventListener('drop', function(e) { e.preventDefault();
-        drop.classList.remove('dragover'); const items = e.dataTransfer && e.dataTransfer.items ? e.dataTransfer.items : []; if (items && items.length) { handleDropItems(items); } });
-    drop.addEventListener('click', () => folderInput.click());
-    drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
-            folderInput.click(); } });
+    // drag/drop features removed per request (uploader removed from HTML)
 
     // Initialize
     renderSavedApps();
@@ -171,8 +139,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!art) return;
         const id = art.dataset.appId || ('static:' + (Math.random().toString(36).slice(2, 8)));
         art.dataset.appId = id;
-        titleEl.addEventListener('dblclick', (ev) => { ev.stopPropagation();
-            enableEditing(titleEl, id); });
+        titleEl.addEventListener('dblclick', (ev) => {
+            ev.stopPropagation();
+            enableEditing(titleEl, id);
+        });
         const apps = loadApps();
         const saved = apps.find(a => a.id === id);
         if (saved && saved.title) titleEl.textContent = saved.title;
