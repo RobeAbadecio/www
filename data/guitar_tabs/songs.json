@@ -8,16 +8,20 @@
                         "strings": [
                             [
                                 {
+                                    "value": "1",
+                                    "delay": 4650
+                                },
+                                {
                                     "value": "15",
-                                    "delay": null
+                                    "delay": 468
                                 },
                                 {
                                     "value": "b",
-                                    "delay": null
+                                    "delay": 258
                                 },
                                 {
                                     "value": "17",
-                                    "delay": null
+                                    "delay": 1
                                 },
                                 {
                                     "value": "-",
@@ -25,11 +29,11 @@
                                 },
                                 {
                                     "value": "15",
-                                    "delay": null
+                                    "delay": 50
                                 },
                                 {
                                     "value": "/",
-                                    "delay": null
+                                    "delay": 200
                                 },
                                 {
                                     "value": "14",
@@ -40,18 +44,6 @@
                                     "delay": null
                                 },
                                 {
-                                    "value": "15",
-                                    "delay": null
-                                },
-                                {
-                                    "value": "/",
-                                    "delay": null
-                                },
-                                {
-                                    "value": "17",
-                                    "delay": null
-                                },
-                                {
                                     "value": "-",
                                     "delay": null
                                 },
@@ -65,7 +57,15 @@
                                 },
                                 {
                                     "value": "17",
+                                    "delay": 250
+                                },
+                                {
+                                    "value": "-",
                                     "delay": null
+                                },
+                                {
+                                    "value": "17",
+                                    "delay": 250
                                 },
                                 {
                                     "value": "-",
@@ -73,7 +73,7 @@
                                 },
                                 {
                                     "value": "15",
-                                    "delay": null
+                                    "delay": 50000000
                                 },
                                 {
                                     "value": "-",
@@ -366,7 +366,7 @@
                                     "delay": null
                                 },
                                 {
-                                    "value": "-",
+                                    "value": "12",
                                     "delay": null
                                 },
                                 {
@@ -1940,10 +1940,15 @@
                             ]
                         ]
                     }
-                ]
+                ],
+                "audio": {
+                    "url": "/data/guitar_tabs/audio/latina-solo_20251116_081208_dfbd83.mp3",
+                    "volume": 1,
+                    "name": "latina-solo"
+                }
             },
             "created_at": "2025-11-16T07:42:34+00:00",
-            "updated_at": "2025-11-16T07:51:07+00:00"
+            "updated_at": "2025-11-16T08:40:14+00:00"
         }
     ]
 }

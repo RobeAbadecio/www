@@ -80,21 +80,26 @@ document.addEventListener('DOMContentLoaded', async function() {
     let lastLocalSaveAt = 0; // timestamp of last local save
     const lastLoadedVersion = {}; // map: songName -> updated_at seen
 
-    // Sidebar toggle functionality
+    // Backing audio state
+    let currentAudio = null;
+    let currentAudioMeta = { url: null, volume: 1.0, name: '' };
+
+    // Sidebar toggle functionality (defensive guards)
     const toggler = document.querySelector('.toggler');
     const sidebar = document.querySelector('.sidebar');
-    const chevronIcon = toggler.querySelector('.material-symbols-rounded');
+    const chevronIcon = toggler ? toggler.querySelector('.material-symbols-rounded') : null;
+    if (toggler && sidebar && chevronIcon) {
+        toggler.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
 
-    toggler.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-
-        // Rotate chevron icon
-        if (sidebar.classList.contains('collapsed')) {
-            chevronIcon.style.transform = 'rotate(180deg)';
-        } else {
-            chevronIcon.style.transform = 'rotate(0deg)';
-        }
-    });
+            // Rotate chevron icon
+            if (sidebar.classList.contains('collapsed')) {
+                chevronIcon.style.transform = 'rotate(180deg)';
+            } else {
+                chevronIcon.style.transform = 'rotate(0deg)';
+            }
+        });
+    }
 
     // Guitar tab interaction
     // Modal elements for editing notes
@@ -120,9 +125,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         noteModal.setAttribute('aria-hidden', 'true');
     }
 
-    noteCancelBtn.addEventListener('click', () => closeNoteModal());
-    noteModal.querySelector('.modal-overlay').addEventListener('click', () => closeNoteModal());
-    noteSaveBtn.addEventListener('click', async() => {
+    if (noteCancelBtn) noteCancelBtn.addEventListener('click', () => closeNoteModal());
+    if (noteModal) {
+        const overlayEl = noteModal.querySelector('.modal-overlay');
+        if (overlayEl) overlayEl.addEventListener('click', () => closeNoteModal());
+    }
+    if (noteSaveBtn) noteSaveBtn.addEventListener('click', async() => {
         if (!activeDash) return closeNoteModal();
         const val = noteValueInput.value.trim();
         const delay = parseInt(noteDelayInput.value) || 500;
@@ -157,6 +165,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     }); // Function to initialize a single tab section
     // Render saved song buttons in sidebar from server (fallback to localStorage)
     await renderSavedSongs();
+    // If nothing is active, auto-select and load the first saved song
+    (function autoSelectFirstSaved() {
+        const hasActive = !!document.querySelector('.sidebar .song-button.active');
+        if (hasActive) return;
+        const firstEntry = document.querySelector('#song-list .song-entry');
+        if (!firstEntry) return;
+        const btn = firstEntry.querySelector('.song-button');
+        if (!btn) return;
+        btn.classList.add('active');
+        const name = firstEntry.dataset.name || btn.dataset.name;
+        if (name && name !== 'First Song') {
+            loadSongByName(name);
+        }
+    })();
 
     // Wire up the existing First Song button to load an empty First Song
     const firstSongBtn = document.querySelector('#song-list [data-name="First Song"]');
@@ -257,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Handle "Add New Tab Section" button
     const addTabButton = document.querySelector('.add-tab-button');
-    addTabButton.addEventListener('click', async() => {
+    if (addTabButton) addTabButton.addEventListener('click', async() => {
         const tabContainer = document.querySelector('.tab-container');
         const newSection = document.createElement('div');
         newSection.className = 'tab-section';
@@ -481,6 +503,16 @@ E|------------------------------------------------------------------------------
             if (playbackState.playing) {
                 // If already playing, toggle pause state
                 playbackState.paused = !playbackState.paused;
+                // Sync backing audio with pause/resume
+                if (currentAudio) {
+                    try {
+                        if (playbackState.paused) {
+                            currentAudio.pause();
+                        } else {
+                            await currentAudio.play();
+                        }
+                    } catch (e) { /* ignore */ }
+                }
                 updatePlayButtonState();
                 return;
             }
@@ -489,10 +521,25 @@ E|------------------------------------------------------------------------------
             playbackState.playing = true;
             playbackState.paused = false;
             playbackState.stopped = false;
+            // Start backing audio if attached
+            if (currentAudio && currentAudioMeta.url) {
+                try {
+                    currentAudio.currentTime = 0;
+                    currentAudio.volume = Number((currentAudioMeta.volume != null) ? currentAudioMeta.volume : 1.0);
+                    await currentAudio.play();
+                } catch (e) { /* ignore */ }
+            }
             updatePlayButtonState();
             await playAllSections();
             playbackState.playing = false;
             playbackState.paused = false;
+            // Stop backing audio when done
+            if (currentAudio) {
+                try {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                } catch (e) { /* ignore */ }
+            }
             updatePlayButtonState();
         });
     }
@@ -502,6 +549,13 @@ E|------------------------------------------------------------------------------
             playbackState.stopped = true;
             playbackState.paused = false;
             playbackState.playing = false;
+            // Stop audio immediately
+            if (currentAudio) {
+                try {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                } catch (e) { /* ignore */ }
+            }
 
             // Clear any remaining highlights
             document.querySelectorAll('.highlight').forEach(h => {
@@ -538,7 +592,7 @@ E|------------------------------------------------------------------------------
             });
             sections.push(sectionData);
         });
-        return { sections };
+        return { sections, audio: currentAudioMeta };
     }
 
     function listSavedSongsLocal() {
@@ -838,6 +892,13 @@ E|------------------------------------------------------------------------------
         `;
         tabContainer.insertBefore(newSection, addBtn);
         initializeSingleTabSection(newSection);
+        // reset audio for new empty song
+        const volInput = document.getElementById('audio-volume');
+        const nameSpan = document.getElementById('audio-name');
+        if (currentAudio) { try { currentAudio.pause(); } catch (e) {} }
+        currentAudio = null;
+        currentAudioMeta = { url: null, volume: (volInput ? Number(volInput.value || 1.0) : 1.0), name: '' };
+        if (nameSpan) nameSpan.textContent = '';
     }
 
     // Add new song (creates song button and loads empty content)
@@ -1030,6 +1091,20 @@ E|${'-'.repeat(80)}|</pre>
         if (songObj.updated_at) {
             lastLoadedVersion[name] = songObj.updated_at;
         }
+
+        // Restore backing audio from song data
+        const volInput = document.getElementById('audio-volume');
+        const nameSpan = document.getElementById('audio-name');
+        const audioMeta = Object.assign({ url: null, volume: 1.0, name: '' }, (data && data.audio) || {});
+        currentAudioMeta = audioMeta;
+        if (volInput) volInput.value = Number((audioMeta.volume != null) ? audioMeta.volume : 1.0);
+        if (nameSpan) nameSpan.textContent = audioMeta.name ? ('\u2022 ' + audioMeta.name) : '';
+        if (currentAudio) { try { currentAudio.pause(); } catch (e) {} }
+        currentAudio = null;
+        if (audioMeta.url) {
+            currentAudio = new Audio(audioMeta.url);
+            currentAudio.volume = Number((audioMeta.volume != null) ? audioMeta.volume : 1.0);
+        }
     }
 
     // Save the current song by name (no prompt). If name is not provided, use the active song name or generate one.
@@ -1053,4 +1128,53 @@ E|${'-'.repeat(80)}|</pre>
     }
 
     // (Old simple Play All removed — using column-wise playAllSections + controls above)
+    // Backing audio: UI wiring
+    const attachBtn = document.getElementById('attach-audio');
+    const fileInput = document.getElementById('audio-file-input');
+    const volumeInput = document.getElementById('audio-volume');
+    const audioNameSpan = document.getElementById('audio-name');
+
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', async() => {
+            const file = fileInput.files && fileInput.files[0];
+            if (!file) return;
+            const fd = new FormData();
+            fd.append('file', file);
+            try {
+                const res = await fetch('/api/guitar-tabs/upload.php', { method: 'POST', body: fd });
+                const json = await res.json();
+                if (!res.ok || !json.success) throw new Error(json.message || 'Upload failed');
+                currentAudioMeta.url = json.url;
+                currentAudioMeta.name = file.name;
+                if (volumeInput) currentAudioMeta.volume = Number(volumeInput.value || 1.0);
+                if (currentAudio) { try { currentAudio.pause(); } catch (e) {} }
+                currentAudio = new Audio(currentAudioMeta.url);
+                currentAudio.volume = Number(currentAudioMeta.volume || 1.0);
+                if (audioNameSpan) audioNameSpan.textContent = '\u2022 ' + (file.name || 'audio');
+                // Save updated audio metadata
+                isDirty = true;
+                await autoSaveCurrentSong();
+                lastLocalSaveAt = Date.now();
+            } catch (e) {
+                alert('Audio upload failed: ' + e.message);
+            } finally {
+                isDirty = false;
+                fileInput.value = '';
+            }
+        });
+    }
+
+    if (volumeInput) {
+        volumeInput.addEventListener('input', async() => {
+            const v = Number(volumeInput.value || 1.0);
+            currentAudioMeta.volume = v;
+            if (currentAudio) currentAudio.volume = v;
+            try {
+                isDirty = true;
+                await autoSaveCurrentSong();
+                lastLocalSaveAt = Date.now();
+            } catch (_) {} finally { isDirty = false; }
+        });
+    }
 });

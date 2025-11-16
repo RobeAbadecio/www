@@ -53,6 +53,16 @@
                         Stop
                     </button>
                 </div>
+                <div class="audio-controls" style="display:flex; align-items:center; gap:8px; margin-left:12px;">
+                    <button id="attach-audio" title="Attach backing track" class="song-button" style="padding:6px 10px;">
+                        <span class="material-symbols-rounded">library_music</span>
+                        <span class="button-text">Attach Audio</span>
+                    </button>
+                    <input id="audio-file-input" type="file" accept="audio/*" style="display:none" />
+                    <label for="audio-volume" style="font-size:12px; color:#666;">Vol</label>
+                    <input id="audio-volume" type="range" min="0" max="1" step="0.01" value="1" style="width:120px;" />
+                    <span id="audio-name" style="font-size:12px; color:#888; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+                </div>
                 <div class="progress-wrap">
                     <div class="progress-bar" aria-hidden="true">
                         <div class="progress-fill" style="width:0%"></div>
