@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Tabs - Network Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎸 Guitar Tabs Network Test</h1>
+
+    <div class="info test-result">
+        <strong>Current Location:</strong> <span id="current-url"></span>
+    </div>
+
+    <h2>API Connection Test</h2>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="api-result"></div>
+
+    <h2>Instructions to Access from iPad</h2>
+    <div class="info test-result">
+        <h3>Step 1: Find Your Computer's IP Address</h3>
+        <p>On your Windows computer, open PowerShell and run:</p>
+        <code>ipconfig | Select-String "IPv4"</code>
+        <p>Look for an IP like <code>192.168.1.x</code> or <code>10.0.0.x</code></p>
+
+        <h3>Step 2: Configure WAMP to Accept Network Connections</h3>
+        <ol>
+            <li>Click the WAMP icon in your system tray (bottom right)</li>
+            <li>Go to <strong>Apache → httpd.conf</strong></li>
+            <li>Find the line: <code>Require local</code></li>
+            <li>Change it to: <code>Require all granted</code></li>
+            <li>Save and restart Apache from the WAMP menu</li>
+        </ol>
+
+        <h3>Step 3: Allow Windows Firewall</h3>
+        <p>Make sure Windows Firewall allows Apache:</p>
+        <ol>
+            <li>Search for "Windows Defender Firewall"</li>
+            <li>Click "Allow an app through firewall"</li>
+            <li>Find "Apache HTTP Server" and check both Private and Public</li>
+            <li>Click OK</li>
+        </ol>
+
+        <h3>Step 4: Access from iPad</h3>
+        <p>On your iPad browser, go to:</p>
+        <code>http://YOUR_COMPUTER_IP/Applications/guitar_tabs/index.html</code>
+        <p>Replace YOUR_COMPUTER_IP with the IP address from Step 1</p>
+    </div>
+
+    <h2>Saved Songs on Server</h2>
+    <button onclick="listSongs()">List Saved Songs</button>
+    <div id="songs-result"></div>
+
+    <script>
+        document.getElementById('current-url').textContent = window.location.href;
+
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<div class="info test-result">Testing...</div>';
+
+            try {
+                const response = await fetch('/api/guitar-tabs/songs.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success test-result">
+                            <strong>✓ API Connection Successful!</strong><br>
+                            Server is accessible and responding correctly.
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error test-result">
+                            <strong>✗ API Error:</strong> ${data.message || 'Unknown error'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error test-result">
+                        <strong>✗ Connection Failed:</strong><br>
+                        ${error.message}<br><br>
+                        <strong>Possible causes:</strong>
+                        <ul>
+                            <li>WAMP server is not running</li>
+                            <li>WAMP is configured for localhost only (see instructions above)</li>
+                            <li>Windows Firewall is blocking connections</li>
+                            <li>You're not on the same network as your computer</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        async function listSongs() {
+            const resultDiv = document.getElementById('songs-result');
+            resultDiv.innerHTML = '<div class="info test-result">Loading...</div>';
+
+            try {
+                const response = await fetch('/api/guitar-tabs/songs.php');
+                const data = await response.json();
+
+                if (data.success && data.songs) {
+                    if (data.songs.length === 0) {
+                        resultDiv.innerHTML = `
+                            <div class="info test-result">
+                                No songs saved on server yet.
+                            </div>
+                        `;
+                    } else {
+                        const songsList = data.songs.map(s =>
+                            `<li><strong>${s.name}</strong> - Updated: ${new Date(s.updated_at).toLocaleString()}</li>`
+                        ).join('');
+                        resultDiv.innerHTML = `
+                            <div class="success test-result">
+                                <strong>Songs on Server (${data.songs.length}):</strong>
+                                <ul>${songsList}</ul>
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error test-result">
+                            <strong>Error:</strong> ${data.message || 'Failed to load songs'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error test-result">
+                        <strong>Connection Failed:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test on load
+        setTimeout(testAPI, 500);
+    </script>
+</body>
+
+</html>

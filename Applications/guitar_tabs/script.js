@@ -1,4 +1,85 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // --- API Configuration (must be at top before any API calls) ---
+    const API_BASE = '/api/guitar-tabs/songs.php';
+
+    async function apiListSongs() {
+        try {
+            console.log('[API] Fetching songs list from:', API_BASE);
+            // Add cache-busting timestamp to prevent browser caching
+            const url = API_BASE + '?_=' + Date.now();
+            const res = await fetch(url, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache' }
+            });
+            console.log('[API] Response status:', res.status, res.statusText);
+            const text = await res.text();
+            console.log('[API] Response body:', text.substring(0, 200));
+            const json = JSON.parse(text);
+            console.log('[API] Server response:', json);
+            if (!res.ok || !json.success) {
+                throw new Error(json.message || 'List failed');
+            }
+            const names = (json.songs || []).map(s => s.name).filter(Boolean);
+            console.log('[API] Found', names.length, 'songs:', names);
+            return names;
+        } catch (e) {
+            console.error('[API] List songs failed:', e);
+            alert('Error loading songs from server: ' + e.message + '\n\nPlease check the debug page for details.');
+            return null; // signal fallback
+        }
+    }
+
+    async function apiLoadSong(name) {
+        const url = API_BASE + '?name=' + encodeURIComponent(name) + '&_=' + Date.now();
+        console.log('[API] Loading song:', name, 'from', url);
+        const res = await fetch(url, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
+        const json = await res.json();
+        console.log('[API] Load response:', json);
+        if (!res.ok || !json.success || !json.song || !json.song.data) throw new Error(json.message || 'Load failed');
+        // Return full object so we can access updated_at for live sync
+        return json.song; // { name, data, updated_at, created_at }
+    }
+
+    async function apiSaveSong(name, data) {
+        const res = await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, data })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message || 'Save failed');
+        return true;
+    }
+
+    async function apiDeleteSong(name) {
+        const res = await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', name })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message || 'Delete failed');
+        return true;
+    }
+
+    async function apiRenameSong(oldName, newName) {
+        const res = await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'rename', oldName, newName })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message || 'Rename failed');
+        return true;
+    }
+
+    // --- End of API functions ---
+
+    // Live sync state
+    let isDirty = false; // true while we have unsaved local edits
+    let lastLocalSaveAt = 0; // timestamp of last local save
+    const lastLoadedVersion = {}; // map: songName -> updated_at seen
+
     // Sidebar toggle functionality
     const toggler = document.querySelector('.toggler');
     const sidebar = document.querySelector('.sidebar');
@@ -41,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     noteCancelBtn.addEventListener('click', () => closeNoteModal());
     noteModal.querySelector('.modal-overlay').addEventListener('click', () => closeNoteModal());
-    noteSaveBtn.addEventListener('click', () => {
+    noteSaveBtn.addEventListener('click', async() => {
         if (!activeDash) return closeNoteModal();
         const val = noteValueInput.value.trim();
         const delay = parseInt(noteDelayInput.value) || 500;
@@ -65,14 +146,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         closeNoteModal();
         // auto-save after editing a note
-        autoSaveCurrentSong();
+        isDirty = true;
+        await autoSaveCurrentSong();
+        lastLocalSaveAt = Date.now();
+        isDirty = false;
     });
     // Initialize all existing tab sections on page load
     document.querySelectorAll('.tab-section').forEach(section => {
         initializeSingleTabSection(section);
     }); // Function to initialize a single tab section
-    // Render saved song buttons in sidebar
-    renderSavedSongs();
+    // Render saved song buttons in sidebar from server (fallback to localStorage)
+    await renderSavedSongs();
 
     // Wire up the existing First Song button to load an empty First Song
     const firstSongBtn = document.querySelector('#song-list [data-name="First Song"]');
@@ -95,14 +179,17 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteBtn.className = 'delete-section-button';
         deleteBtn.innerHTML = '<span class="material-symbols-rounded">close</span>';
         deleteBtn.title = 'Delete section';
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', async() => {
             if (document.querySelectorAll('.tab-section').length <= 1) {
                 alert('Cannot delete the last section');
                 return;
             }
             if (confirm('Delete this section?')) {
                 section.remove();
-                autoSaveCurrentSong(); // Save after deleting
+                isDirty = true;
+                await autoSaveCurrentSong(); // Save after deleting
+                lastLocalSaveAt = Date.now();
+                isDirty = false;
             }
         });
         section.appendChild(deleteBtn);
@@ -140,12 +227,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     openNoteModal(dashSpan);
                 });
 
-                // Right click to remove note
-                dashSpan.addEventListener('contextmenu', function(e) {
+                // Right click to remove note (autosaves immediately)
+                dashSpan.addEventListener('contextmenu', async function(e) {
                     e.preventDefault();
                     dashSpan.textContent = '-';
                     dashSpan.classList.remove('tab-note');
                     delete dashSpan.dataset.delay;
+                    try {
+                        isDirty = true;
+                        await autoSaveCurrentSong();
+                        lastLocalSaveAt = Date.now();
+                    } catch (_) { /* ignore */ } finally { isDirty = false; }
                 });
 
                 dashesContainer.appendChild(dashSpan);
@@ -165,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle "Add New Tab Section" button
     const addTabButton = document.querySelector('.add-tab-button');
-    addTabButton.addEventListener('click', () => {
+    addTabButton.addEventListener('click', async() => {
         const tabContainer = document.querySelector('.tab-container');
         const newSection = document.createElement('div');
         newSection.className = 'tab-section';
@@ -184,7 +276,10 @@ E|------------------------------------------------------------------------------
         // Initialize only the new section
         initializeSingleTabSection(newSection);
         // auto-save after adding a tab section
-        autoSaveCurrentSong();
+        isDirty = true;
+        await autoSaveCurrentSong();
+        lastLocalSaveAt = Date.now();
+        isDirty = false;
     });
 
     // helper: sleep with pause/stop awareness
@@ -424,7 +519,8 @@ E|------------------------------------------------------------------------------
         });
     }
 
-    // --- Save / Load functionality (localStorage) ---
+    // --- Save / Load functionality (Server-backed repository with localStorage fallback) ---
+
     function serializeSong() {
         const sections = [];
         document.querySelectorAll('.tab-section').forEach(section => {
@@ -445,7 +541,7 @@ E|------------------------------------------------------------------------------
         return { sections };
     }
 
-    function listSavedSongs() {
+    function listSavedSongsLocal() {
         const keys = [];
         for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
@@ -455,11 +551,59 @@ E|------------------------------------------------------------------------------
     }
 
     // Render saved songs into the top song list (preload)
-    function renderSavedSongs() {
-        const saved = listSavedSongs();
-        saved.forEach(name => {
-            createSongListButton(name, { saved: true, active: false });
+    async function renderSavedSongs() {
+        console.log('[Render] Loading saved songs...');
+        const loadingMsg = document.getElementById('loading-songs');
+
+        // Try server first
+        const serverList = await apiListSongs();
+        let names = [];
+        if (serverList !== null && serverList.length > 0) {
+            console.log('[Render] Using server songs:', serverList);
+            names = serverList;
+        } else {
+            console.log('[Render] Server empty or failed, checking localStorage...');
+            const localNames = listSavedSongsLocal();
+            console.log('[Render] Found', localNames.length, 'songs in localStorage');
+            names = localNames;
+        }
+        console.log('[Render] Creating buttons for', names.length, 'songs');
+
+        // Remove loading message
+        if (loadingMsg) {
+            loadingMsg.remove();
+            console.log('[Render] Loading message removed');
+        }
+
+        // Show message if no songs found
+        if (names.length === 0) {
+            console.log('[Render] No songs found, showing message');
+            const noSongsMsg = document.createElement('div');
+            noSongsMsg.id = 'no-songs-msg';
+            noSongsMsg.style.cssText = 'padding: 10px; color: #999; font-size: 14px; text-align: center;';
+            noSongsMsg.textContent = 'No saved songs. Click "Add New Song" to start.';
+            const songList = document.getElementById('song-list');
+            if (songList) {
+                songList.insertBefore(noSongsMsg, songList.firstChild);
+                console.log('[Render] No songs message added to DOM');
+            } else {
+                console.error('[Render] Could not find #song-list element!');
+            }
+        } else {
+            console.log('[Render] Found', names.length, 'songs, creating buttons...');
+        }
+
+        names.forEach((name, index) => {
+            console.log(`[Render] Creating button ${index + 1}/${names.length}: "${name}"`);
+            const result = createSongListButton(name, { saved: true, active: false });
+            console.log(`[Render] Button created for "${name}":`, result ? 'success' : 'failed');
         });
+
+        console.log('[Render] Finished rendering songs');
+
+        // Verify buttons were added
+        const buttonCount = document.querySelectorAll('#song-list .song-entry').length;
+        console.log(`[Render] Total song buttons in DOM: ${buttonCount}`);
     }
 
     // Return the currently active song name (or null)
@@ -473,45 +617,56 @@ E|------------------------------------------------------------------------------
     }
 
     // Auto-save the currently active song to localStorage using its name
-    function autoSaveCurrentSong() {
+    async function autoSaveCurrentSong() {
         const name = getActiveSongName();
         if (!name) return;
         const data = serializeSong();
+        // Try to save on server; if that fails, fallback to localStorage
+        let savedServer = false;
         try {
-            localStorage.setItem('guitar_tabs_' + name, JSON.stringify(data));
-            // mark UI as saved for this song
-            const container = document.querySelector('#song-list [data-name="' + CSS.escape(name) + '"]');
-            if (container) {
-                const btn = container.querySelector('.song-button');
-                if (btn) btn.dataset.saved = '1';
-            }
-        } catch (err) {
-            console.error('Auto-save failed for', name, err);
+            await apiSaveSong(name, data);
+            savedServer = true;
+        } catch (e) { savedServer = false; }
+        if (!savedServer) {
+            try { localStorage.setItem('guitar_tabs_' + name, JSON.stringify(data)); } catch (err) { /* ignore */ }
+        }
+        // mark UI as saved for this song
+        const container = document.querySelector('#song-list [data-name="' + CSS.escape(name) + '"]');
+        if (container) {
+            const btn = container.querySelector('.song-button');
+            if (btn) btn.dataset.saved = '1';
         }
     }
 
     // Perform rename: move storage key and update UI
-    function performRename(oldName, newName, container, btn) {
+    async function performRename(oldName, newName, container, btn) {
         if (!oldName || !newName) return false;
         const list = document.getElementById('song-list');
         const existing = list.querySelector('[data-name="' + CSS.escape(newName) + '"]');
         if (existing && existing !== container) {
             if (!confirm('A song named "' + newName + '" already exists. Overwrite it?')) return false;
-            try { localStorage.removeItem('guitar_tabs_' + newName); } catch (err) { console.error(err); }
+            try { await apiDeleteSong(newName); } catch (err) { try { localStorage.removeItem('guitar_tabs_' + newName); } catch (e) {} }
             existing.remove();
         }
-
+        // Try server rename; fallback to localStorage move
+        let renamed = false;
         try {
-            const oldKey = 'guitar_tabs_' + oldName;
-            const newKey = 'guitar_tabs_' + newName;
-            let payload = localStorage.getItem(oldKey);
-            if (!payload) payload = JSON.stringify(serializeSong());
-            localStorage.setItem(newKey, payload);
-            try { localStorage.removeItem(oldKey); } catch (err) { /* ignore */ }
-        } catch (err) {
-            console.error('Rename failed (storage):', err);
-            alert('Failed to rename song: ' + err.message);
-            return false;
+            await apiRenameSong(oldName, newName);
+            renamed = true;
+        } catch (e) { renamed = false; }
+        if (!renamed) {
+            try {
+                const oldKey = 'guitar_tabs_' + oldName;
+                const newKey = 'guitar_tabs_' + newName;
+                let payload = localStorage.getItem(oldKey);
+                if (!payload) payload = JSON.stringify(serializeSong());
+                localStorage.setItem(newKey, payload);
+                try { localStorage.removeItem(oldKey); } catch (err) { /* ignore */ }
+            } catch (err) {
+                console.error('Rename failed (storage):', err);
+                alert('Failed to rename song: ' + err.message);
+                return false;
+            }
         }
 
         // update UI container and button
@@ -557,7 +712,7 @@ E|------------------------------------------------------------------------------
             // load song
             if (curName === 'First Song') {
                 loadFirstSong();
-            } else if (opts.saved || localStorage.getItem('guitar_tabs_' + curName)) {
+            } else if (opts.saved) {
                 loadSongByName(curName);
             } else {
                 loadEmptySong(curName);
@@ -619,15 +774,12 @@ E|------------------------------------------------------------------------------
         del.className = 'delete-song-button';
         del.title = 'Delete song';
         del.innerHTML = '<span class="material-symbols-rounded">delete</span>';
-        del.addEventListener('click', (e) => {
+        del.addEventListener('click', async(e) => {
             e.stopPropagation();
             const curName = container.dataset.name;
             if (!confirm('Delete song "' + curName + '"? This cannot be undone.')) return;
-            try {
-                localStorage.removeItem('guitar_tabs_' + curName);
-            } catch (err) {
-                console.error('Failed to remove song from localStorage', err);
-            }
+            // Try server delete; fallback to localStorage
+            try { await apiDeleteSong(curName); } catch (err) { try { localStorage.removeItem('guitar_tabs_' + curName); } catch (e2) {} }
             // remove from UI
             container.remove();
         });
@@ -709,12 +861,134 @@ E|------------------------------------------------------------------------------
         });
     }
 
+    // Auto-refresh song list every 5 seconds to keep all devices in sync
+    let lastSongList = [];
+    async function autoRefreshSongs() {
+        try {
+            const serverList = await apiListSongs();
+            if (serverList && serverList.length > 0) {
+                // Check if song list has changed
+                const listChanged = JSON.stringify(serverList.sort()) !== JSON.stringify(lastSongList.sort());
+                if (listChanged) {
+                    console.log('[Auto-Refresh] Song list changed, updating UI');
+                    lastSongList = [...serverList];
+
+                    // Get currently active song before refresh
+                    const activeSongName = getActiveSongName();
+
+                    // Remove existing song entries (except add button)
+                    document.querySelectorAll('#song-list .song-entry').forEach(entry => entry.remove());
+                    const _noMsg = document.getElementById('no-songs-msg');
+                    if (_noMsg) _noMsg.remove();
+
+                    // Re-render songs
+                    serverList.forEach(name => {
+                        createSongListButton(name, {
+                            saved: true,
+                            active: name === activeSongName
+                        });
+                    });
+
+                    console.log('[Auto-Refresh] UI updated with', serverList.length, 'songs');
+                }
+            }
+        } catch (e) {
+            console.error('[Auto-Refresh] Failed:', e);
+        }
+    }
+
+    // Start auto-refresh loop (fallback; SSE handles near real-time)
+    setInterval(autoRefreshSongs, 10000);
+    console.log('[Auto-Refresh] Started - fallback every 10 seconds');
+
+    // Live-sync: poll active song content and reload if server version changed (fallback)
+    async function pollActiveSongContent() {
+        try {
+            const name = getActiveSongName();
+            if (!name || name === 'First Song') return;
+            // avoid clobbering local edits or immediate post-save
+            if (isDirty) return;
+            if (Date.now() - lastLocalSaveAt < 1000) return;
+
+            // Load lightweight info by fetching full song (small JSON); API already supports cache-busting
+            const songObj = await apiLoadSong(name);
+            const serverVer = songObj.updated_at || null;
+            const lastVer = lastLoadedVersion[name] || null;
+            if (serverVer && lastVer && serverVer === lastVer) return; // no change
+
+            // If changed on server, reload UI from server
+            if (serverVer && serverVer !== lastVer) {
+                console.log('[Live-Sync] Detected update for', name, '-> reloading');
+                await loadSongByName(name);
+                lastLoadedVersion[name] = serverVer;
+            } else if (!lastVer && serverVer) {
+                // first time tracking this song's version
+                lastLoadedVersion[name] = serverVer;
+            }
+        } catch (e) {
+            // Silently ignore; device may be offline or song removed
+        }
+    }
+    // Poll every 10 seconds as a fallback; SSE will push immediate updates
+    setInterval(pollActiveSongContent, 10000);
+    console.log('[Live-Sync] Started - fallback polling active song every 10s');
+
+    // Prefer SSE for real-time updates
+    function connectLiveUpdates() {
+        if (!('EventSource' in window)) {
+            console.warn('[Live-Sync] EventSource not supported; using polling');
+            return;
+        }
+        try {
+            const es = new EventSource('/api/guitar-tabs/changes.php');
+            es.addEventListener('update', (ev) => {
+                try {
+                    const payload = JSON.parse(ev.data || '{}');
+                    const names = Array.isArray(payload.names) ? payload.names : [];
+                    const updatedMap = payload.updatedMap || {};
+
+                    // Update song list if changed
+                    const listChanged = JSON.stringify([...names].sort()) !== JSON.stringify([...lastSongList].sort());
+                    if (listChanged) {
+                        const active = getActiveSongName();
+                        lastSongList = [...names];
+                        document.querySelectorAll('#song-list .song-entry').forEach(e => e.remove());
+                        const _noMsg = document.getElementById('no-songs-msg');
+                        if (_noMsg) _noMsg.remove();
+                        names.forEach(n => createSongListButton(n, { saved: true, active: n === active }));
+                        console.log('[SSE] Updated song list via server push');
+                    }
+
+                    // If active song changed on server, reload it (unless we just saved/are editing)
+                    const activeName = getActiveSongName();
+                    if (activeName) {
+                        const serverVer = updatedMap[activeName];
+                        const lastVer = lastLoadedVersion[activeName];
+                        if (serverVer && serverVer !== lastVer && !isDirty && (Date.now() - lastLocalSaveAt >= 300)) {
+                            loadSongByName(activeName).then(() => { lastLoadedVersion[activeName] = serverVer; });
+                        }
+                    }
+                } catch (e) { /* ignore parse errors */ }
+            });
+            es.onerror = () => {
+                console.warn('[SSE] Connection error; browser will retry automatically');
+            };
+        } catch (e) {
+            console.warn('[SSE] Failed to connect; falling back to polling');
+        }
+    }
+    connectLiveUpdates();
+
     // Load by name (no prompt) and reuse existing logic
-    function loadSongByName(name) {
+    async function loadSongByName(name) {
         if (!name) return;
-        const raw = localStorage.getItem('guitar_tabs_' + name);
-        if (!raw) { alert('No saved song with that name'); return; }
-        const data = JSON.parse(raw);
+        let songObj = null;
+        try { songObj = await apiLoadSong(name); } catch (e) {
+            const raw = localStorage.getItem('guitar_tabs_' + name);
+            if (!raw) { alert('No saved song with that name'); return; }
+            songObj = { name, data: JSON.parse(raw), updated_at: null };
+        }
+        const data = songObj.data;
 
         const tabContainer = document.querySelector('.tab-container');
         const addBtn = document.querySelector('.add-tab-button');
@@ -751,19 +1025,20 @@ E|${'-'.repeat(80)}|</pre>
                 });
             });
         });
+
+        // Record loaded version for live-sync comparisons
+        if (songObj.updated_at) {
+            lastLoadedVersion[name] = songObj.updated_at;
+        }
     }
 
     // Save the current song by name (no prompt). If name is not provided, use the active song name or generate one.
-    function saveSong(name) {
+    async function saveSong(name) {
         const songName = name || getActiveSongName() || generateUntitledName();
         const data = serializeSong();
-        try {
-            localStorage.setItem('guitar_tabs_' + songName, JSON.stringify(data));
-            // ensure the song has a UI entry and mark as saved
-            createSongListButton(songName, { saved: true, active: true });
-        } catch (err) {
-            console.error('Failed to save:', err);
-        }
+        try { await apiSaveSong(songName, data); } catch (e) { try { localStorage.setItem('guitar_tabs_' + songName, JSON.stringify(data)); } catch (e2) {} }
+        // ensure the song has a UI entry and mark as saved
+        createSongListButton(songName, { saved: true, active: true });
     }
 
     function loadSong() {

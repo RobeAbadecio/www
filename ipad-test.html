@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WAMP Test - iPad Connection</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+            text-align: center;
+            background: #f0f0f0;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .success {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #666;
+            margin: 20px 0;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="success">✓ Connection Successful!</div>
+        <div class="info">Your iPad can reach the WAMP server</div>
+        <hr>
+        <h3>Try these links:</h3>
+        <a href="/api/guitar-tabs/songs.php">→ Test API Endpoint</a>
+        <a href="/Applications/guitar_tabs/debug.html">→ Guitar Tabs Debug (Case 1)</a>
+        <a href="/applications/guitar_tabs/debug.html">→ Guitar Tabs Debug (Case 2)</a>
+        <a href="/Applications/guitar_tabs/index.html">→ Guitar Tabs App</a>
+    </div>
+    <script>
+        document.querySelector('.box').innerHTML += `
+            <div class="info" style="margin-top: 20px; font-size: 14px;">
+                <strong>Your IP:</strong> ${window.location.host}<br>
+                <strong>Browser:</strong> ${navigator.userAgent.includes('iPad') ? 'iPad ✓' : navigator.platform}
+            </div>
+        `;
+    </script>
+</body>
+
+</html>
