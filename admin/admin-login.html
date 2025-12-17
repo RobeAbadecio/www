@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <title>SLU OSA Portal</title>
+        <link rel="icon"
+            href="/resources/images/Saint-Louis-University-PH-Logo.png">
+        <link rel="stylesheet" href="/styles/login-style.css">
+        <script src="admin-login.js" defer></script>
+    </head>
+
+    <body>
+        <div class="login-page">
+            <div class="banner-container">
+                <img class="school-logo"
+                    src="/resources/images/Saint-Louis-University-PH-Logo.png"
+                    alt="SLU-logo">
+                <div class="banner-text">Saint Louis University Student
+                    Organization
+                    Admin Portal</div>
+            </div>
+
+            <div class="form">
+                <div class="form-intro">
+                    <div class="intro-title">Welcome
+                        Back</div>
+                    <div class="intro-paragraph">
+                        <p>Sign in to access the portal - Admin</p>
+                    </div>
+                </div>
+
+                <form id="loginForm" class="form-inputs"
+                    onsubmit="return handleLogin(event)">
+                    <div class="form-container">
+                        <label class="form-label">Email</label>
+                        <input class="input" placeholder="Admin Email"
+                            type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-container">
+                        <label class="form-label">Password</label>
+                        <input class="input" placeholder="Password"
+                            type="password" id="password" name="password"
+                            required>
+                    </div>
+
+                    <button type="submit" class="button">
+                            Sign In to Portal
+                    </button>
+                    
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

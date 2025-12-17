@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+        <meta name="description"
+            content="Admin Dashboard - Monitor online users and system activity">
+        <title>Admin Dashboard - OSA Portal</title>
+        <link rel="icon"
+            href="/resources/images/Saint-Louis-University-PH-Logo.png">
+        <link rel="stylesheet"
+            href="/styles/admin-dashboard.css">
+        <script src="admin-portal.js" defer></script>
+    </head>
+
+    <body>
+        <div class="admin-page">
+            <!-- Top Navigation Bar -->
+            <nav class="top-navigation">
+                <div class="nav-left">
+                    <div class="logo-section">
+                        <img
+                            src="/resources/images/Saint-Louis-University-PH-Logo.png"
+                            alt="SLU Logo" class="nav-logo">
+                        <h2 class="nav-title">Student Organization Admin
+                            Portal</h2>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <button class="logout-button-top" onclick="handleLogout()">
+                        <img src="/resources/icons/logout-icon.svg"
+                            alt="Logout" class="logout-icon">
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content-full">
+                <div class="accounts-container">
+                    <div class="accounts-header">
+                        <h1>Admin Dashboard</h1>
+                        <p class="subtitle">Monitor online users and system
+                            activity</p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <div class="stat-card-compact">
+                            <div class="stat-icon online">●</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="online-orgs">0</div>
+                                <div class="stat-label">Organizations
+                                    Online</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-compact">
+                            <div class="stat-icon online">●</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="online-osa">0</div>
+                                <div class="stat-label">OSA Staff Online</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-compact">
+                            <div class="stat-icon">●</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-users">0</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Online Users Tab -->
+                    <div class="tab-content active" id="online-users-tab">
+                        <div class="section-header">
+                            <h2>All Accounts</h2>
+                            <div class="filter-controls">
+                                <input type="text" id="online-search"
+                                    placeholder="Search by name or email..."
+                                    class="search-input">
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>User Type</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Last Activity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="online-table-body">
+                                    <tr>
+                                        <td colspan="5"
+                                            class="text-center loading">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+
+</html>

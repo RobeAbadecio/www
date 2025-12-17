@@ -1,0 +1,375 @@
+@import url('/styles/fonts.css');
+
+html {
+  background-color: #ffffff;
+  opacity: 1;
+  background-image: radial-gradient(#444cf7 0.5px, #ffffff 0.5px);
+  background-size: 10px 10px;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.login-page {
+  display: flex;
+}
+
+.banner-container {
+  width: 576px;
+  height: 100vh;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #036 0%, #001f3f 100%);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 20px;
+}
+
+.banner-container .school-logo {
+  width: 77.922px;
+}
+
+.banner-container .banner-text {
+  color: #fff;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 42px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 50.4px;
+  /* 120% */
+}
+
+.form {
+  display: flex;
+  width: 456px;
+  height: 311px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  flex-shrink: 0;
+  padding-left: clamp(1px, 15vw, 300px);
+  padding-top: clamp(1px, 5vw, 300px);
+}
+
+@media (max-width: 1476px) {
+  .form {
+    padding-left: 10vw;
+  }
+
+  .banner-container {
+    height: 105vh;
+  }
+}
+
+@media (max-width: 1376px) {
+  .form {
+    padding-left: 10vw;
+  }
+}
+
+@media (max-width: 1201px) {
+  .banner-container {
+    width: 400px;
+  }
+}
+
+@media (max-width: 1007px) {
+  .banner-container {
+    width: 300px;
+  }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .login-page {
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .banner-container {
+    width: 100% !important;
+    height: auto;
+    min-height: 150px;
+    padding: 30px 20px;
+    box-sizing: border-box;
+  }
+
+  .banner-container .school-logo {
+    width: 55px;
+  }
+
+  .banner-container .banner-text {
+    font-size: 22px;
+    line-height: 30px;
+    margin-top: 12px;
+  }
+
+  .form {
+    width: 100% !important;
+    max-width: 100%;
+    padding: 25px 20px !important;
+    padding-left: 20px !important;
+    padding-top: 25px !important;
+    margin: 0;
+    box-sizing: border-box;
+    height: auto;
+  }
+
+  .form-intro {
+    width: 100%;
+  }
+
+  .form-inputs {
+    width: 100% !important;
+    height: auto;
+  }
+
+  .intro-title {
+    font-size: 26px;
+    line-height: 34px;
+  }
+
+  .intro-paragraph {
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  .form-container {
+    width: 100%;
+    height: auto;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .button-container {
+    width: 100% !important;
+  }
+
+  .or-container {
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-container {
+    min-height: 140px;
+    padding: 25px 15px;
+  }
+
+  .banner-container .school-logo {
+    width: 50px;
+  }
+
+  .banner-container .banner-text {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .form {
+    padding: 20px 15px !important;
+    gap: 12px;
+  }
+
+  .form-intro {
+    margin-bottom: 10px;
+  }
+
+  .form-inputs {
+    gap: 12px;
+  }
+
+  .intro-title {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .intro-paragraph {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .intro-paragraph p {
+    margin: 5px 0;
+  }
+
+  .form-container {
+    height: auto;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .input {
+    height: 46px;
+    padding: 4px 12px;
+    font-size: 14px;
+  }
+
+  .forgot-link {
+    height: auto;
+    margin: 5px 0;
+  }
+
+  .forgot-text {
+    height: auto;
+    font-size: 13px;
+  }
+
+  .button {
+    height: 48px;
+    margin-top: 5px;
+  }
+
+  .button-text {
+    font-size: 14px;
+  }
+
+  .or-container {
+    margin: 8px auto;
+    padding: 5px 15px;
+  }
+
+  #error-message {
+    font-size: 13px;
+    margin-top: 8px !important;
+  }
+}
+
+.form-inputs {
+  display: flex;
+  width: 456px;
+  height: 311px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  height: 81px;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+}
+
+.intro-title {
+  color: #036;
+  font-family: Poppins;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 43.2px;
+  /* 120% */
+}
+
+.intro-paragraph {
+  color: #64748b;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  /* 150% */
+}
+
+.form-label {
+  color: #036;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 21px;
+  /* 150% */
+}
+
+.input {
+  display: flex;
+  height: 52px;
+  padding: 4px 16px;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #f3f3f5;
+}
+
+.forgot-text {
+  display: flex;
+  height: 21px;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  font-family: Poppins;
+}
+
+.button {
+  height: 56px;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, #036 0%, #001f3f 100%);
+  color: #fff;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  /* 150% */
+}
+
+.button-container {
+  width: 454px;
+  height: 54px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(255, 215, 0, 0.05) 100%
+  );
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  /* 150% */
+}
+
+.or-container {
+  display: inline-flex;
+  padding: 7px 16.719px 7px 17px;
+  justify-content: center;
+  align-items: center;
+  display: block;
+  margin: 0 auto;
+  width: 4rem;
+  font-family: Poppins;
+  text-align: center;
+}

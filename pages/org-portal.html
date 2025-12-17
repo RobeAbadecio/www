@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Portal</title>
+    <link rel="stylesheet" href="/styles/org-portal.css">
+    <link rel="icon" href="/resources/images/Saint-Louis-University-PH-Logo.png">
+    <script src="/scripts/login.js" defer></script>
+    <script src="/scripts/pdf-utils.js" defer></script>
+    <script src="/scripts/org-portal.js" defer></script>
+</head>
+<body>
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-menu" id="hamburger-toggle" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img src="/resources/images/Saint-Louis-University-PH-Logo.png" alt="SLU-logo">
+            </div>
+            <h3>Student<br>Organization Portal</h3>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar"></div>
+            <div class="user-info">
+                <h4 id = "user-name">User</h4>
+                <p>Student Organization</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item" id="submissions-btn" onclick="showTab('submissions'); return false;">Submission History</a>
+            <a href="#" class="nav-item active-btn" id="form-btn" onclick="showTab('form'); return false;">Form</a>
+        </nav>
+
+        <button class="logout-btn" onclick="handleLogout()">
+            <img src="/resources/icons/logout-icon.svg" alt="Logout">
+            Logout
+        </button>
+    </aside>
+
+    <!-- Overlay for closing menu -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- FORM TAB CONTENT -->
+    <main class="main-content tab-content active" id="form-content">
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-header__title">End-Term Submission Form</h2>
+                <p class="form-header__subtitle">Please fill out all required fields and upload necessary documents</p>
+            </div>
+
+            <form class="form-body" id="orgSubmissionForm">
+                <!-- Submission Title -->
+                <div class="form-group">
+                    <label class="form-label form-label--required">Submission Title</label>
+                    <input type="text" class="form-input" id="submission_title" name="submission_title" required
+                        placeholder="e.g. End-Term Requirements 2024-2025, Mid-Year Report 2025">
+                    <div class="form-hint">Give this submission a descriptive title to help you identify it later</div>
+                </div>
+
+                <!-- Organization Information -->
+                <section class="form-section">
+                    <h3 class="form-section__title">Organization Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Complete Name of Organization or Publication</label>
+                        <input type="text" class="form-input" id="org_full_name" name="org_full_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Acronym or Short Name</label>
+                        <input type="text" class="form-input" id="org_acronym" name="org_acronym" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Official SLU Institutional Email</label>
+                        <input type="email" class="form-input" id="org_email" name="org_email" required
+                            placeholder="organization@slu.edu.ph">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">URL Link/s to Official Social Media Pages</label>
+                        <input type="text" class="form-input" id="social_media_links" name="social_media_links"
+                            placeholder="https://facebook.com/yourorg, https://instagram.com/yourorg">
+                    </div>
+                </section>
+
+                <!-- Applicant Information -->
+                <section class="form-section">
+                    <h3 class="form-section__title">Applicant Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Name of Applicant Representing the Organization</label>
+                        <input type="text" class="form-input" id="applicant_name" name="applicant_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Position of Applicant</label>
+                        <input type="text" class="form-input" id="applicant_position" name="applicant_position" required
+                            placeholder="e.g. President, Vice President">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Applicant's SLU Institutional Email</label>
+                        <input type="email" class="form-input" id="applicant_email" name="applicant_email" required
+                            placeholder="applicant@slu.edu.ph">
+                    </div>
+                </section>
+
+                <!-- Adviser Information -->
+                <section class="form-section">
+                    <h3 class="form-section__title">Adviser Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Name of Adviser/s</label>
+                        <input type="text" class="form-input" id="adviser_names" name="adviser_names" required
+                            placeholder="Separate multiple names with commas">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Adviser Email/s</label>
+                        <input type="text" class="form-input" id="adviser_emails" name="adviser_emails" required
+                            placeholder="adviser@slu.edu.ph (separate multiple with commas)">
+                    </div>
+                </section>
+
+                <!-- Category -->
+                <section class="form-section">
+                    <h3 class="form-section__title">Category</h3>
+                    <div class="form-checkbox-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="samcis" name="category" value="SAMCIS" class="form-checkbox__input">
+                            <label for="samcis" class="form-checkbox__label">SAMCIS</label>
+                        </div>
+
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="sea" name="category" value="SEA" class="form-checkbox__input">
+                            <label for="sea" class="form-checkbox__label">SEA</label>
+                        </div>
+
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="som" name="category" value="SOM" class="form-checkbox__input">
+                            <label for="som" class="form-checkbox__label">SOM</label>
+                        </div>
+
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="sonahbs" name="category" value="SONAHBS" class="form-checkbox__input">
+                            <label for="sonahbs" class="form-checkbox__label">SONAHBS</label>
+                        </div>
+
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="sol" name="category" value="SOL" class="form-checkbox__input">
+                            <label for="sol" class="form-checkbox__label">SOL</label>
+                        </div>
+
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="stela" name="category" value="STELA" class="form-checkbox__input">
+                            <label for="stela" class="form-checkbox__label">STELA</label>
+                        </div>
+                        
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="university-wide" name="category" value="University-Wide"
+                                class="form-checkbox__input">
+                            <label for="university-wide" class="form-checkbox__label">University-Wide</label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Type of Organization -->
+                <section class="form-section">
+                    <h3 class="form-section__title">Type of Organization</h3>
+                    <div class="form-radio-group">
+                        <div class="form-radio">
+                            <input type="radio" id="co-curricular" name="org_type" value="co-curricular" required
+                                class="form-radio__input">
+                            <label for="co-curricular" class="form-radio__label">Co-Curricular</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="extra-curricular" name="org_type" value="extra-curricular" required
+                                class="form-radio__input">
+                            <label for="extra-curricular" class="form-radio__label">Extra-Curricular</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="publication" name="org_type" value="publication" required
+                                class="form-radio__input">
+                            <label for="publication" class="form-radio__label">Publication</label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="event-section">
+                    <h3 class="form-section__title">Events</h3>
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Name of the Event</label>
+                        <input type="text" class="form-input" name="event_name[]" required placeholder="e.g. Annual General Assembly, Fundraising Drive">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Event Date</label>
+                        <input type="date" class="form-input" name="event_date[]" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Event Venue</label>
+                        <input type="text" class="form-input" name="event_venue[]" required
+                            placeholder="e.g. Main Auditorium, Conference Room">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Event Description</label>
+                        <textarea class="form-input" name="event_description[]" required placeholder="Provide a brief description of the event"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Expected Number of Participants</label>
+                        <input type="number" class="form-input" name="event_participants[]" required
+                            placeholder="e.g. 50, 100">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required">Budget Estimate (PHP)</label>
+                        <input type="number" class="form-input" name="event_budget[]" required
+                            placeholder="e.g. 5000, 10000">
+                    </div>
+                        
+                    <div class="event-actions">
+                        <button type="button" class="btn btn--secondary" onclick="addEvent()">+ Add Another Event</button>
+                    </div>
+                </section>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label class="form-label">Upload Document (Optional)</label>
+                        <input type="file" class="form-input" id="uploaded_file" name="uploaded_file" accept=".pdf,.png,.jpg,.jpeg,image/png,image/jpeg,application/pdf">
+                        <div class="form-hint">Accepted formats: PDF, PNG, JPEG (Max 5MB)</div>
+                    </div>
+                </div>
+
+                <!-- Important Reminder -->
+                <div class="form-alert">
+                    <div class="form-alert__title">⓵ Important Reminder:</div>
+                    <div class="form-alert__text">All information submitted will be treated with confidentiality and used
+                        solely for organizational accreditation purposes. Please ensure all documents are complete and
+                        accurate before submission.</div>
+                </div>
+            </form>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary" onclick="
+                    event.preventDefault();
+                    const form = document.getElementById('orgSubmissionForm');
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return false;
+                    }
+                    if (!document.querySelector('input[name=category]:checked')) {
+                        alert('Please select at least one category');
+                        return false;
+                    }
+                    submitForm(event);
+                ">Submit Form</button>
+                <button type="button" class="btn btn--secondary" onclick="clearForm()">Clear Form</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- SUBMISSIONS TAB CONTENT -->
+    <div class="main-content tab-content" id="submissions-content">
+        <header class="header">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search submissions..." oninput="
+                    let q = this.value.toLowerCase();
+                    let filtered = allRecords.filter(r => 
+                        (r.org_name||'').toLowerCase().includes(q) || 
+                        (r.submission_title||'').toLowerCase().includes(q) || 
+                        (r.applicant_name||'').toLowerCase().includes(q) ||
+                        (r.created_at||'').includes(q)
+                    );
+                    displayRecords(filtered);
+                ">
+            </div>
+
+            <div class="filter-controls">
+                <select id="sortFilter" class="status-filter" onchange="
+                    let s = [...allRecords];
+                    if(this.value=='date-desc') s.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+                    if(this.value=='date-asc') s.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+                    if(this.value=='title-asc') s.sort((a,b)=>(a.submission_title||'').localeCompare(b.submission_title||''));
+                    if(this.value=='title-desc') s.sort((a,b)=>(b.submission_title||'').localeCompare(a.submission_title||''));
+                    displayRecords(s);
+                ">
+                    <option value="">Sort By</option>
+                    <option value="date-desc">Date (Newest First)</option>
+                    <option value="date-asc">Date (Oldest First)</option>
+                    <option value="title-asc">Title (A-Z)</option>
+                    <option value="title-desc">Title (Z-A)</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="content-header">
+                <h1>Submission History</h1>
+                <p class="subtitle">View all your submitted forms and their current status</p>
+            </div>
+
+            <div class="submissions-container">
+                <table class="submissions-table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Form Title</th>
+                            <th>Applicant</th>
+                            <th>Date Submitted</th>
+                            <th>Actions</th>
+                            <th>View File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+
+                <!-- Empty state -->
+                <div class="empty-state" style="display: none;">
+                    <h3>No Submissions Yet</h3>
+                    <p>You haven't submitted any forms yet. Start by filling out a form.</p>
+                    <a href="#" onclick="showTab('form'); return false;" class="btn-primary">Go to Form</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active-btn');
+                item.classList.add('inactive-btn');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            // Add active class to selected nav item
+            const selectedButton = document.getElementById(tabName + '-btn');
+            if (selectedButton) {
+                selectedButton.classList.add('active-btn');
+                selectedButton.classList.remove('inactive-btn');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('form');
+        });
+    </script>
+</body>
+</html>

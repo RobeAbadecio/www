@@ -1,0 +1,690 @@
+@import url('/styles/fonts.css');
+
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Arimo", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Top Navigation Bar */
+.top-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: #09375C;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-logo {
+    height: 45px;
+    width: auto;
+}
+
+.nav-title {
+    color: white;
+    font-family: "Arimo", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.logout-button-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-family: "Arimo", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px; /* Touch-friendly minimum size */
+    touch-action: manipulation;
+}
+
+.logout-button-top:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.logout-button-top:active {
+    transform: translateY(0);
+}
+
+.logout-button-top .logout-icon {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+}
+
+/* Page Layout */
+.admin-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content-full {
+    margin-top: 70px;
+    padding: 40px 48px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Arimo", sans-serif;
+    display: flex;
+    justify-content: center;
+}
+
+/* Accounts Container - Centered and Dynamic */
+.accounts-container {
+    display: flex;
+    width: 100%;
+    max-width: 1600px;
+    padding: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    box-sizing: border-box;
+}
+
+/* Make all children of accounts-container full width */
+.accounts-container > * {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Tab Content Full Width */
+.tab-content {
+    width: 100%;
+}
+
+/* Section Header Adjustments */
+.section-header {
+    width: 100%;
+}
+
+/* Table Container - Full Width and Centered */
+.table-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+/* Data Table - Full Width */
+.data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+/* Table Column Widths for Better Distribution */
+.data-table th,
+.data-table td {
+    text-align: left;
+    padding: 16px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Table header styling */
+.data-table thead {
+    background: #F8F9FA;
+    border-bottom: 2px solid #E9ECEF;
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Table row styling */
+.data-table tbody tr {
+    border-bottom: 1px solid #E9ECEF;
+    transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: #F8F9FA;
+}
+
+/* Specific column widths for Online Users tab */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { width: 15%; }
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) { width: 25%; }
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { width: 30%; }
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { width: 20%; }
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { width: 10%; text-align: center; }
+
+/* Center align status column */
+.data-table th:last-child,
+.data-table td:last-child {
+    text-align: center;
+}
+
+/* Quick Stats - Compact cards for top metrics */
+.quick-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.stat-card-compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 200px;
+}
+
+.stat-icon {
+    font-size: 24px;
+    color: #94a3b8;
+}
+
+.stat-icon.online {
+    color: #10b981;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0A0A0A;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 400;
+}
+
+/* Type badges for user types */
+.type-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.type-badge.type-organization {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.type-badge.type-osa-staff {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.online {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.status-offline {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Accounts Header */
+.accounts-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.accounts-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.section-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0A0A0A;
+    margin: 0;
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-family: "Arimo", sans-serif;
+    font-size: 14px;
+    width: 300px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #444cf7;
+    box-shadow: 0 0 0 3px rgba(68, 76, 247, 0.1);
+}
+
+.filter-select {
+    padding: 10px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-family: "Arimo", sans-serif;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #444cf7;
+    box-shadow: 0 0 0 3px rgba(68, 76, 247, 0.1);
+}
+
+.btn-refresh {
+    padding: 10px 20px;
+    background: #444cf7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: "Arimo", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-refresh:hover {
+    background: #3a42d4;
+}
+
+.btn-refresh:active {
+    transform: translateY(0);
+}
+
+/* Table Utilities */
+.text-center {
+    text-align: center;
+    padding: 24px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.loading {
+    font-style: italic;
+}
+
+.no-data {
+    color: #94a3b8;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    .main-content-full {
+        padding: 30px 30px;
+    }
+
+    .accounts-container {
+        max-width: 100%;
+    }
+
+    .stat-card-compact {
+        min-width: 180px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .main-content-full {
+        padding: 25px 20px;
+    }
+
+    .accounts-container {
+        max-width: 100%;
+    }
+
+    .quick-stats {
+        gap: 15px;
+    }
+
+    .stat-card-compact {
+        min-width: 150px;
+        padding: 14px 16px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+
+    /* Adjust table for medium screens */
+    .data-table th:nth-child(1),
+    .data-table td:nth-child(1) { width: 12%; }
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2) { width: 23%; }
+    .data-table th:nth-child(3),
+    .data-table td:nth-child(3) { width: 28%; }
+    .data-table th:nth-child(4),
+    .data-table td:nth-child(4) { width: 22%; }
+    .data-table th:nth-child(5),
+    .data-table td:nth-child(5) { width: 15%; }
+}
+
+@media screen and (max-width: 768px) {
+    .top-navigation {
+        padding: 0 20px;
+        height: 60px;
+    }
+
+    .nav-logo {
+        height: 35px;
+    }
+
+    .nav-title {
+        font-size: 16px;
+    }
+
+    .logout-button-top span {
+        display: none;
+    }
+
+    .logout-button-top {
+        padding: 10px;
+    }
+
+    .main-content-full {
+        margin-top: 60px;
+        padding: 20px 16px;
+    }
+
+    .accounts-container {
+        max-width: 100%;
+    }
+
+    .quick-stats {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card-compact {
+        min-width: 100%;
+        width: 100%;
+    }
+
+    /* Make tables scrollable on mobile */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px;
+    }
+
+    /* Remove fixed table layout on mobile */
+    .data-table {
+        min-width: 600px;
+        table-layout: auto;
+    }
+
+    /* Reset column widths on mobile */
+    .data-table th,
+    .data-table td {
+        width: auto !important;
+        white-space: nowrap;
+    }
+
+    /* Adjust tab navigation for mobile */
+    .tab-navigation {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tab-button {
+        font-size: 13px;
+        padding: 8px 14px;
+        white-space: nowrap;
+    }
+
+    /* Adjust filter controls for mobile */
+    .filter-controls {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .search-input,
+    .filter-select,
+    .btn-refresh {
+        width: 100%;
+    }
+
+    /* Adjust section headers */
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .section-header h2 {
+        font-size: 18px;
+    }
+
+    /* Adjust accounts header */
+    .accounts-header h1 {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .top-navigation {
+        padding: 0 12px;
+        height: 56px;
+    }
+
+    .nav-logo {
+        height: 30px;
+    }
+
+    .nav-title {
+        font-size: 14px;
+    }
+
+    .logo-section {
+        gap: 8px;
+    }
+
+    .logout-button-top {
+        padding: 8px;
+    }
+
+    .logout-button-top .logout-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .main-content-full {
+        margin-top: 56px;
+        padding: 16px 12px;
+    }
+
+    .accounts-header h1 {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .stat-icon {
+        font-size: 20px;
+    }
+
+    .tab-button {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .tab-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        min-width: 18px;
+    }
+
+    .data-table {
+        font-size: 13px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px;
+    }
+
+    /* Stack pagination controls on very small screens */
+    .pagination-controls {
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-page {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .top-navigation {
+        position: static;
+        box-shadow: none;
+        border-bottom: 2px solid #09375C;
+    }
+
+    .logout-button-top {
+        display: none;
+    }
+
+    .main-content-full {
+        margin-top: 0;
+        padding: 20px;
+    }
+
+    .tab-navigation,
+    .filter-controls,
+    .pagination-container {
+        display: none;
+    }
+
+    .table-container {
+        overflow: visible;
+    }
+
+    .stat-card-compact {
+        break-inside: avoid;
+    }
+}

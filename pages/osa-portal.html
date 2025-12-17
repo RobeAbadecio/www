@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OSA Portal - Forms & Documents</title>
+        <link rel="icon"
+            href="../resources/images/Saint-Louis-University-PH-Logo.png">
+        <link rel="stylesheet" href="../styles/osa-portal.css">
+        <script src="../scripts/login.js" defer></script>
+        <script src="../scripts/pdf-utils.js" defer></script>
+        <script src="../scripts/osa-portal.js" defer></script>
+        <style>
+            /* Tab Content Visibility */
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
+            /* Active Menu Button Style */
+            .menu-button.active {
+                background-color: rgba(255, 255, 255, 0.2);
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="OSA-portal-page">
+            <!-- Hamburger Menu Button (Mobile Only) -->
+            <button class="hamburger-menu" id="hamburger-toggle"
+                aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Navigation Sidebar -->
+            <nav class="navigation-side-bar" id="navigation-sidebar">
+                <div class="navigation-container">
+                    <div class="banner">
+                        <div class="image-SLU-logo">
+                            <img
+                                src="../resources/images/Saint-Louis-University-PH-Logo.png"
+                                alt="SLU Logo">
+                        </div>
+                        <div class="banner-heading">
+                            <div class="banner-text-wrapper">
+                                <h2>OSA Student Organization Portal</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-container">
+                        <button class="menu-button active" id="forms-button"
+                            onclick="showTab('forms')">
+                            <img class="menu-icon-img"
+                                src="/resources/icons/document-icon.svg"
+                                alt="Forms">
+                            Forms
+                        </button>
+
+                        <button class="menu-button" id="documents-button"
+                            onclick="showTab('documents')">
+                            <img class="menu-icon-img"
+                                src="/resources/icons/folder-icon.svg"
+                                alt="Documents">
+                            Documents
+                        </button>
+                    </div>
+
+                    <button class="logout-button" onclick="handleLogout()">
+                        <img src="/resources/icons/logout-icon.svg"
+                            alt="Logout">
+                        Logout
+                    </button>
+                </div>
+            </nav>
+
+            <!-- FORMS TAB CONTENT -->
+            <main class="main-content tab-content active" id="forms-content">
+                <div class="forms-container">
+                    <div class="forms-title"><h1>Forms Management</h1></div>
+                    <div class="forms-area">
+                        <div class="forms">
+                            <div class="form-header">
+                                <div class="form-description">
+                                    <div class="form-header-title">
+                                        <h2>Submitted Forms</h2>
+                                    </div>
+                                    <div class="form-text-description">Manage
+                                        student forms</div>
+                                </div>
+                            </div>
+
+                            <!-- Search and Sort Controls -->
+                            <div class="sort-container">
+                                <img src="/resources/icons/magnify-icon.svg"
+                                    alt="Search">
+                                <input type="text" id="search-input"
+                                    placeholder="Search forms"
+                                    class="search-bar" oninput="
+                                    let searched = this.value.toLowerCase();
+                                    let filtered = formRecords.filter(sorted =>
+                                    (sorted.submission_title||'').toLowerCase().includes(searched) ||
+                                    (sorted.org_name||'').toLowerCase().includes(searched) ||
+                                    (sorted.applicant_name||'').toLowerCase().includes(searched) ||
+                                    (sorted.created_at||'').includes(searched) ||
+                                    (sorted.organization_school||'').toLowerCase().includes(searched)
+                                    );
+                                    displayForms(filtered);
+                                    ">
+
+                                <div class="sort-dropdown">
+                                    <label for="sort-by">Sort by:</label>
+                                    <select id="sort-by" class="sort-select" onchange="
+                                    let forms = [...formRecords];
+                                    if(this.value=='date-newest') {
+                                        forms.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                                    } else if (this.value=='date-oldest') {
+                                        forms.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+                                    } else if (this.value=='name-az') {
+                                        forms.sort((a,b) => (a.submission_title||'').localeCompare(b.submission_title||''));
+                                    } else if (this.value=='name-za') {
+                                        forms.sort((a,b) => (b.submission_title||'').localeCompare(a.submission_title||''));
+                                    } else if (this.value=='org') {
+                                        forms.sort((a,b) => (a.org_name||'').localeCompare(b.org_name||''));
+                                    }
+                                    displayForms(forms);
+                                    ">
+                                        <option value="date-newest">Date
+                                            (Newest)</option>
+                                        <option value="date-oldest">Date
+                                            (Oldest)</option>
+                                        <option value="name-az">Name
+                                            (A-Z)</option>
+                                        <option value="name-za">Name
+                                            (Z-A)</option>
+                                        <option
+                                            value="org">Organization</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Forms Table -->
+                            <div class="forms-list">
+                                <div class="form-table-wrapper">
+                                    <table class="form-table">
+                                        <thead>
+                                            <tr class="table-headers">
+                                                <th>Submission Title</th>
+                                                <th>Organization Name</th>
+                                                <th>Submitted By</th>
+                                                <th>Date Submitted</th>
+                                                <th>School</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data will be loaded dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- DOCUMENTS TAB CONTENT -->
+            <div class="main-content tab-content" id="documents-content">
+                <div class="documents-container">
+                    <div class="documents-title">
+                        <h1>Document Management</h1>
+                    </div>
+                    <div class="documents-description">
+                        <p>View and manage uploaded documents from Student
+                            Organizations</p>
+                    </div>
+
+                    <!-- Search and Sort Controls -->
+                    <div class="search-and-sort-container">
+                        <div class="search-box">
+                            <input type="text" id="document-search"
+                                placeholder="Search documents..."
+                                class="search-input" oninput="
+                                let documentSearch = this.value.toLowerCase();
+                                    let docFilter = allDocuments.filter(sorted =>
+                                    (sorted.submission_title||'').toLowerCase().includes(documentSearch) ||
+                                    (sorted.org_name||'').toLowerCase().includes(documentSearch) ||
+                                    (sorted.applicant_name||'').toLowerCase().includes(documentSearch) ||
+                                    (sorted.created_at||'').includes(documentSearch) ||
+                                    (sorted.organization_school||'').toLowerCase().includes(documentSearch)
+                                    ) || (sorted.files.some(file =>
+                                        (file.file_name||'').toLowerCase().includes(documentSearch)
+                                    ));
+                                    displayDocuments(docFilter);
+                                ">
+                        </div>
+
+                        <div class="sort-dropdown">
+                            <label for="document-sort-by">Sort by:</label>
+                            <select id="document-sort-by" class="sort-select" onchange="
+                            let sort = [...allDocuments];
+                            if (this.value=='date-newest') {
+                                sort.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                            } else if (this.value=='date-oldest') {
+                                sort.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+                            } else if (this.value=='name-az') {
+                                sort.sort((a,b) => (a.submission_title||'').localeCompare(b.submission_title||''));
+                            } else if (this.value=='name-za') {
+                                sort.sort((a,b) => (b.submission_title||'').localeCompare(a.submission_title||''));
+                            } else if (this.value=='org') {
+                                sort.sort((a,b) => (a.org_name||'').localeCompare(b.org_name||''));
+                            }
+                            displayDocuments(sort);
+                            ">
+                                <option value="date-newest">Date
+                                    (Newest)</option>
+                                <option value="date-oldest">Date
+                                    (Oldest)</option>
+                                <option value="name-az">Name (A-Z)</option>
+                                <option value="name-za">Name (Z-A)</option>
+                                <option value="org">Organization</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Documents Table -->
+                    <div class="documents-table-container">
+                        <div class="documents-table-wrapper">
+                            <table class="documents-table">
+                                <thead>
+                                    <tr>
+                                        <th>Organization Name</th>
+                                        <th>Submission Title</th>
+                                        <th>School</th>
+                                        <th>Upload Date</th>
+                                        <th>File Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="documents-table-body">
+                                    <tr>
+                                        <td colspan="6"
+                                            class="text-center loading">No
+                                            Document</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Tab switching functionality
+            function showTab(tabName) {
+                // Hide all tab contents
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Remove active class from all menu buttons
+                const menuButtons = document.querySelectorAll('.menu-button');
+                menuButtons.forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                // Show selected tab content
+                const selectedContent = document.getElementById(tabName + '-content');
+                if (selectedContent) {
+                    selectedContent.classList.add('active');
+                }
+
+                // Add active class to selected menu button
+                const selectedButton = document.getElementById(tabName + '-button');
+                if (selectedButton) {
+                    selectedButton.classList.add('active');
+                }
+            }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                // Forms tab is active by default
+                showTab('forms');
+            });
+        </script>
+    </body>
+</html>
