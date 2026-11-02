@@ -6,12 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0b1527">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon.svg">
 <title>Earned Value Analysis — Drag & Drop Reviewer</title>
 <style>
 :root {color-scheme:dark; --bg:#0b1527;--panel:#17243a;--panel2:#1c2d47;--line:#34465d;--ink:#eff5ff;--muted:#b0bfd4;--accent:#7de8c7;--accent2:#96b9ff;--gold:#f9ce7d;--red:#ff9aab;--radius:22px}
 * {box-sizing:border-box}html {scroll-behavior:smooth}body {margin:0;background:radial-gradient(ellipse at 80% -10%,#1c3b52 0,transparent 40%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh; padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom))}
 button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible,.drop:focus-visible{outline:3px solid var(--accent);outline-offset:3px}main{width:min(680px,100%);margin:auto;padding:16px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:7px 0 22px}.brand{display:flex;align-items:center;gap:11px}.brand-icon{height:42px;width:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,#70ead4,#a0b8ff);color:#112438;font-size:22px;font-weight:900;box-shadow:0 6px 25px #0005}.eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:850;color:var(--accent)}h1{font-size:21px;letter-spacing:-.65px;line-height:1.13;margin:4px 0 0}.top-count{border:1px solid var(--line);padding:9px 11px;border-radius:13px;text-align:center;white-space:nowrap;background:#1a2840}.top-count strong{font-size:19px;color:var(--gold);display:block;font-variant-numeric:tabular-nums}.top-count small{color:var(--muted);font-size:10px}.panel{background:linear-gradient(150deg,#1a2b44,#142137);border:1px solid #30415b;border-radius:var(--radius);box-shadow:0 14px 40px #0002;padding:20px;margin-bottom:13px}.cardtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:15px}.label{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;color:var(--muted)}.pill{font-size:11px;font-weight:800;color:#0c2830;background:var(--accent);padding:7px 10px;border-radius:100px}.question{font-size:24px;letter-spacing:-.55px;font-weight:820;line-height:1.25;margin:0 0 11px}.sub{color:var(--muted);font-size:13px;line-height:1.55;margin:0}.scenario{margin:17px 0 4px;padding:12px 15px;background:#0b1729;border:1px solid #27374d;border-radius:13px;color:#c5d4e7;font-size:13px;line-height:1.5}.miniheading{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:2px 0 12px}.miniheading h2{font-size:17px;margin:0;letter-spacing:-.3px}.note{font-size:11px;color:var(--muted)}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{min-width:0;min-height:76px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;justify-content:center;padding:11px 13px;border-radius:15px;border:1px solid #3d5570;background:#243954;box-shadow:inset 0 1px 0 #ffffff15;text-align:left;touch-action:none;user-select:none;-webkit-user-select:none;transition:background .15s,transform .15s,border-color .15s}.tile:active{transform:scale(.98)}.tile .tilelabel{color:#c8d8ec;font-size:11px;font-weight:650;line-height:1.25}.tile strong{font-size:18px;letter-spacing:-.35px;font-variant-numeric:tabular-nums;white-space:nowrap}.tile.computed{border-color:#508b81;background:#214442}.tile.computed .tilelabel{color:#bdfae4}.tile small{font-size:11px;color:var(--muted)}.workbench{background:linear-gradient(145deg,#1d304a,#101d30);border-color:#40516c}.slots{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr);gap:9px;margin-top:15px}.drop{min-width:0;min-height:102px;background:#0c192a;border:2px dashed #476079;border-radius:17px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:8px;text-align:center;user-select:none}.drop.active{border-color:var(--accent2);background:#1b3452}.drop.over{border-color:var(--accent);background:#21423d}.drop small{color:var(--muted);font-size:10px;line-height:1.2}.drop strong{font-size:16px;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.drop.oper strong{font-size:29px;color:var(--accent)}.drop.filled{border-style:solid;border-color:#537d8a}.ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0}.op{font-size:27px;font-weight:700;color:#dceaff;background:#2a3e59;border:1px solid #4a607d;border-radius:14px;min-height:53px;touch-action:none;user-select:none;-webkit-user-select:none}.op.selected{color:#0d2025;background:var(--accent);border-color:var(--accent)}.result{padding:14px 15px;background:#0a1727;border:1px solid #3c5368;border-radius:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}.result .label{font-size:10px}.result strong{font-size:27px;font-variant-numeric:tabular-nums;letter-spacing:-.8px;text-align:right;overflow-wrap:anywhere}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn{border-radius:13px;min-height:50px;font-size:14px;font-weight:800;padding:10px 12px;border:1px solid #536987;background:#2d425e}.btn.primary{border-color:var(--accent);color:#0a2425;background:var(--accent);box-shadow:0 8px 24px #1dbd8e17}.btn:disabled{opacity:.42;cursor:default}.btn.subtle{color:#c9daee;background:#172840}.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:9px;margin-top:14px}.textbtn{border:0;padding:7px 1px;color:#b2cffc;background:transparent;font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:4px}.feedback{border-radius:14px;padding:14px 15px;margin-top:13px;font-size:13px;line-height:1.55;background:#2e2a28;border:1px solid #716047}.feedback.good{background:#163c34;border-color:#3d9e80;color:#d1fff0}.feedback.bad{background:#452a35;border-color:#9a5c71;color:#ffe1e9}.feedback.hidden{display:none}.formula{font-size:13px;line-height:1.65;color:#d6e5fa;border:1px solid #46546c;border-radius:14px;padding:14px 15px;background:#111e31;margin-top:12px;white-space:pre-line}.formula[hidden],.hidden{display:none!important}.footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;gap:10px;margin:10px 3px 25px}.drawer{margin-bottom:18px}.drawer summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800}.drawer summary:after{content:'＋';font-size:20px;color:var(--accent)}.drawer[open] summary:after{content:'−'}.formula-list{display:grid;gap:12px;margin-top:17px}.formula-row{font-size:12px;border-top:1px solid var(--line);padding-top:11px;color:#cfdef0;line-height:1.5}.formula-row b{display:block;color:var(--accent);margin-bottom:3px}.tipbar{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.6}.tipbar b{color:#d9e6fa}.dragghost{position:fixed;z-index:9999;pointer-events:none;width:165px;padding:10px;border-radius:14px;border:2px solid var(--accent);background:#25435a;color:#fff;box-shadow:0 14px 35px #000a;transform:translate(-50%,-50%) scale(1.04);text-align:center;font-size:15px;font-weight:850;line-height:1.3}.fade{animation:slide .27s ease}@keyframes slide{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@media(max-width:380px){main{padding:12px}.panel{padding:16px}.question{font-size:22px}.tile strong{font-size:16px}.tile{padding:10px}.slots{grid-template-columns:minmax(0,1fr) 57px minmax(0,1fr);gap:6px}.drop{min-height:90px}.drop strong{font-size:14px}.drop.oper strong{font-size:24px}.result strong{font-size:23px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+#offline-status{margin:8px 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font-size:12px;color:var(--muted)}#offline-status.ready{color:var(--accent);border-color:#276457}.offline-note{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 2px 16px}
 </style>
 </head>
 <body>
@@ -20,6 +24,7 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
     <div class="brand"><div class="brand-icon" aria-hidden="true">∑</div><div><div class="eyebrow">Interactive project management</div><h1>Earned Value Analysis</h1></div></div>
     <div class="top-count"><strong id="score">0</strong><small>solved</small></div>
   </header>
+  <div id="offline-status" role="status">Preparing offline access…</div>
   <section class="panel" id="challenge">
     <div class="cardtop"><span class="label" id="question-counter">CHALLENGE 01</span><span class="pill" id="difficulty">FOUNDATION</span></div>
     <h2 class="question" id="question">Calculate project performance</h2>
@@ -67,7 +72,8 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
       <div class="formula-row"><b>Approximate duration forecast (simplified)</b>Original duration ÷ (SPI) Schedule Performance Index. This is a simplified study model, not a reliable replacement for critical-path scheduling.</div>
     </div>
   </details>
-  <div class="footer"><span>Works offline · No account or internet required</span><button class="textbtn" id="restart">Reset statistics</button></div>
+  <p class="offline-note">For offline reviewing on iPhone: open this site online in Safari, then tap Share → Add to Home Screen. Your current question, tiles and progress are stored on this device. Clearing website data can remove saved progress.</p>
+  <div class="footer"><span>Auto-saves this question and score</span><button class="textbtn" id="restart">Reset statistics</button></div>
 </main>
 <script>
 (function(){'use strict';
@@ -78,7 +84,10 @@ const numeric=n=>Number.isInteger(n)?n.toLocaleString('en-PH'):Number(n.toFixed(
 const numberType=(unit,n)=>unit==='money'?money(n):numeric(n);
 let stats={solved:0,attempted:0,streak:0,best:0};
 try{const raw=JSON.parse(localStorage.getItem('eva-reviewer-statistics-v2'));if(raw&&Number.isFinite(raw.solved))stats={...stats,...raw};}catch(_e){}
-function persist(){try{localStorage.setItem('eva-reviewer-statistics-v2',JSON.stringify(stats));}catch(_e){}}
+function persist(){try{
+ localStorage.setItem('eva-reviewer-statistics-v2',JSON.stringify(stats));
+ if(problem)localStorage.setItem('eva-reviewer-session-v3',JSON.stringify({version:3,stats,problem,memory,slots,selected,solved,attempts,history,seen,hintVisible:$('hint').textContent==='Hide hint',solutionVisible:!$('solution').hidden,feedback:[$('feedback').className,$('feedback').textContent]}));
+}catch(_e){}}
 const r=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
 function build(kind){
  const bac=r(12,35)*100000;
@@ -110,19 +119,51 @@ function build(kind){
  const tiles=Object.keys(vals).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
  return {kind,question,sub,answer,formula,hint:hints[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac};
 }
-let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0;
-function pickKind(){let n=stats.attempted;
- if(n===0)return 'CV';if(n===1)return 'SV';if(n===2)return 'CPI';if(n===3)return 'SPI';
- const rotation=['EAC','ETC','VAC','TCPI','PERCENT','DURATION','EAC_PLANNED','CV','SPI','SV','CPI'];
- return rotation[(n-4)%rotation.length];
+let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0,history=[],seen=[];
+let snapshot=null;
+try{const v=JSON.parse(localStorage.getItem('eva-reviewer-session-v3')||'null');
+ if(v&&v.version===3&&v.problem&&Array.isArray(v.problem.tiles)&&Number.isFinite(v.problem.answer)){
+  snapshot=v;
+  if(v.stats&&Number.isFinite(v.stats.attempted))stats={...stats,...v.stats};
+  history=Array.isArray(v.history)?v.history.slice(-100):[];
+  seen=Array.isArray(v.seen)?v.seen.slice(-1500):[];
+ }
+}catch(_e){}
+const allKinds=['CV','SV','CPI','SPI','EAC','ETC','VAC','TCPI','PERCENT','DURATION','EAC_PLANNED'];
+function pickKind(){
+ const count=stats.attempted;
+ if(count<allKinds.length)return allKinds[count];
+ const recent=history.slice(-3);const options=allKinds.filter(k=>!recent.includes(k));
+ return options[Math.floor(Math.random()*options.length)];
 }
-function next(){problem=build(pickKind());stats.attempted++;persist();memory=[];slots={left:null,op:null,right:null};selected='left';solved=false;attempts=0;
- $('question-counter').textContent='CHALLENGE '+String(stats.attempted).padStart(2,'0');$('difficulty').textContent=problem.tier;
+function displayCurrent(scroll){
+ $('question-counter').textContent='CHALLENGE '+String(stats.attempted).padStart(2,'0');
+ $('difficulty').textContent=problem.tier;
  $('question').textContent=problem.question;$('question-sub').textContent=problem.sub;
- $('scenario').textContent='An application development project has the values listed below. Use any appropriate inputs to calculate the requested result.';
+ $('scenario').textContent=(problem.scenario||'An application development project')+' has the values listed below. Use the relevant inputs to calculate the requested result.';
  $('score').textContent=stats.solved;
- $('feedback').className='feedback hidden';$('feedback').textContent='';$('solution').hidden=true;$('solution').textContent='';$('reveal').textContent='Show worked solution';$('hint').textContent='Show hint';$('next').disabled=true;
- render(); $('challenge').classList.remove('fade');void $('challenge').offsetWidth;$('challenge').classList.add('fade');window.scrollTo({top:0,behavior:'smooth'});
+ $('feedback').className='feedback hidden';$('feedback').textContent='';
+ $('solution').hidden=true;$('solution').textContent='';
+ $('reveal').textContent='Show worked solution';$('hint').textContent='Show hint';
+ $('next').disabled=!solved;
+ if(snapshot){
+  if(snapshot.feedback&&Array.isArray(snapshot.feedback)){$('feedback').className=snapshot.feedback[0];$('feedback').textContent=snapshot.feedback[1];}
+  if(snapshot.hintVisible)$('hint').textContent='Hide hint';
+  if(snapshot.solutionVisible){$('solution').hidden=false;$('solution').textContent=problem.formula;$('reveal').textContent='Hide worked solution';}
+ }
+ render();
+ if(scroll){$('challenge').classList.remove('fade');void $('challenge').offsetWidth;$('challenge').classList.add('fade');window.scrollTo({top:0,behavior:'smooth'});}
+}
+function next(){
+ const kind=pickKind();let candidate,key='';
+ for(let i=0;i<40;i++){
+  candidate=build(kind);
+  key=[kind,candidate.bac,candidate.pv,candidate.ev,candidate.ac,candidate.answer,...candidate.tiles.slice(4).map(t=>t.value)].join(':');
+  if(!seen.includes(key))break;
+ }
+ problem=candidate;seen.push(key);seen=seen.slice(-1500);history.push(kind);history=history.slice(-100);
+ stats.attempted++;snapshot=null;memory=[];slots={left:null,op:null,right:null};selected='left';solved=false;attempts=0;
+ displayCurrent(true);
 }
 function lookup(id){return [...problem.tiles,...memory].find(t=>t.id===id)}
 function renderTiles(){const parent=$('tiles');parent.innerHTML='';for(const t of [...problem.tiles,...memory]){
@@ -144,6 +185,7 @@ function render(){renderTiles();for(const slot of ['left','op','right']){
  for(const b of document.querySelectorAll('.op'))b.classList.toggle('selected',slots.op===b.dataset.op);
  let result=calculate();$('result').textContent=result?numberType(result.unit,result.value):'—';$('result-type').textContent=result?(result.unit==='money'?'Monetary result':'Number / index'):'Fill all three slots';
  $('save').disabled=!result||solved||memory.length>=10;$('check').disabled=!result||solved;
+ persist();
 }
 function writeToken(token,slot){if(solved)return;
  if(token.kind==='operator'){
@@ -168,17 +210,33 @@ function hookDrag(el,token){el.addEventListener('click',()=>{if(el.dataset.wasDr
  });}
 for(const b of document.querySelectorAll('.op'))hookDrag(b,{kind:'operator',id:b.dataset.op});
 for(const b of document.querySelectorAll('.drop'))b.addEventListener('click',()=>{const slot=b.dataset.slot;if(slots[slot])slots[slot]=null;selected=slot;render();});
-$('save').addEventListener('click',()=>{const calc=calculate();if(!calc||solved)return;const id='MEM'+(memory.length+1);memory.push({id,label:'Saved intermediate result '+(memory.length+1),unit:calc.unit,value:calc.value});slots={left:null,op:null,right:null};selected='left';render();$('feedback').className='feedback';$('feedback').textContent='Saved! Drag the new green number tile into your next calculation.';});
+$('save').addEventListener('click',()=>{const calc=calculate();if(!calc||solved)return;const id='MEM'+(memory.length+1);memory.push({id,label:'Saved intermediate result '+(memory.length+1),unit:calc.unit,value:calc.value});slots={left:null,op:null,right:null};selected='left';render();$('feedback').className='feedback';$('feedback').textContent='Saved! Drag the new green number tile into your next calculation.';persist();});
 $('check').addEventListener('click',()=>{let result=calculate();if(!result||solved)return;attempts++;let tolerance=Math.max(0.000001,Math.abs(problem.answer)*0.000001);const correct=Math.abs(result.value-problem.answer)<=tolerance;
  if(correct){solved=true;stats.solved++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);persist();$('score').textContent=stats.solved;$('feedback').className='feedback good';$('feedback').textContent='✓ Correct! '+numberType(problem.unit,problem.answer)+(problem.kind==='PERCENT'?'%':problem.kind==='DURATION'?' months':'')+'. '+(attempts===1?'Solved on your first try. ':'')+'Ready for the next challenge?';$('next').disabled=false;}
  else{stats.streak=0;persist();$('feedback').className='feedback bad';$('feedback').textContent='Not quite. Your expression equals '+numberType(result.unit,result.value)+'. You can replace the numbers or operator and try again. Use a hint or save an intermediate result if this needs multiple steps.';}
  render();});
 $('next').addEventListener('click',next);$('skip').addEventListener('click',()=>{stats.streak=0;persist();next()});
 $('reset').addEventListener('click',()=>{slots={left:null,op:null,right:null};selected='left';$('feedback').className='feedback hidden';render()});
-$('hint').addEventListener('click',()=>{if($('hint').textContent==='Hide hint'){$('feedback').className='feedback hidden';$('hint').textContent='Show hint';return;}$('feedback').className='feedback';$('feedback').textContent='Hint: '+problem.hint;$('hint').textContent='Hide hint'});
-$('reveal').addEventListener('click',()=>{const el=$('solution');el.hidden=!el.hidden;if(!el.hidden)el.textContent=problem.formula;$('reveal').textContent=el.hidden?'Show worked solution':'Hide worked solution'});
-$('restart').addEventListener('click',()=>{if(!confirm('Reset your score and restart from challenge 1?'))return;stats={solved:0,attempted:0,streak:0,best:0};persist();next()});
-next();
+$('hint').addEventListener('click',()=>{if($('hint').textContent==='Hide hint'){$('feedback').className='feedback hidden';$('hint').textContent='Show hint';return;}$('feedback').className='feedback';$('feedback').textContent='Hint: '+problem.hint;$('hint').textContent='Hide hint';persist()});
+$('reveal').addEventListener('click',()=>{const el=$('solution');el.hidden=!el.hidden;if(!el.hidden)el.textContent=problem.formula;$('reveal').textContent=el.hidden?'Show worked solution':'Hide worked solution';persist()});
+$('restart').addEventListener('click',()=>{if(!confirm('Reset your score and restart from challenge 1?'))return;stats={solved:0,attempted:0,streak:0,best:0};history=[];seen=[];snapshot=null;next()});
+if(snapshot){
+ problem=snapshot.problem;memory=Array.isArray(snapshot.memory)?snapshot.memory.slice(0,10):[];
+ slots=snapshot.slots||{left:null,op:null,right:null};selected=snapshot.selected||'left';
+ solved=!!snapshot.solved;attempts=Number(snapshot.attempts)||0;
+ displayCurrent(false);
+}else next();
+const status=$('offline-status');
+const refreshStatus=()=>{
+ if(!navigator.onLine){status.textContent='Offline mode · You can continue your saved practice.';status.classList.add('ready');}
+ else if(navigator.serviceWorker&&navigator.serviceWorker.controller){status.textContent='Offline access enabled · Your practice is saved on this device.';status.classList.add('ready');}
+ else status.textContent='Online · Preparing offline access. In Safari, add to Home Screen after loading.';
+};
+window.addEventListener('online',refreshStatus);window.addEventListener('offline',refreshStatus);
+refreshStatus();
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{status.textContent='Offline-ready after first full online load · Progress saves automatically.';status.classList.add('ready');}).catch(()=>{status.textContent='Offline setup is unavailable in this browser. Open in Safari and add to Home Screen.';});
+}
 })();
 </script>
 </body>
