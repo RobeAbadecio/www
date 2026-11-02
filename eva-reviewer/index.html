@@ -18,14 +18,16 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
 #offline-status{margin:8px 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font-size:12px;color:var(--muted)}#offline-status.ready{color:var(--accent);border-color:#276457}.offline-note{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 2px 16px}
 .calculation-details,.calculation-trail{margin-top:10px;padding:12px 14px;background:#101f33;border:1px solid #324961;border-radius:14px;min-width:0}
 .calculation-caption{font-size:10px;letter-spacing:1.25px;color:var(--accent2);font-weight:850;margin-bottom:8px}
-.result-equation{font-size:16px;font-weight:800;line-height:1.55;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.result-values{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:0;max-width:62%;text-align:right}
+.result-values strong{max-width:100%}
+.result-equation{font-size:12px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;color:var(--accent2)}
 .result-sources,.calculation-steps{font-size:12px;color:#c3d5ea;line-height:1.6;overflow-wrap:anywhere;white-space:pre-line}
 .result-sources:empty{display:none}
 .result-sources{margin-top:7px}
 .step-entry{padding:5px 0;border-top:1px solid #33455a;white-space:pre-line}
 .step-entry:first-child{border-top:0}
 .feedback{white-space:pre-line}
-@media(max-width:410px){.result-equation{font-size:14px}}
+@media(max-width:410px){.result-values{max-width:65%}.result-equation{font-size:11px}}
 </style>
 </head>
 <body>
@@ -59,10 +61,9 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
       <button class="op" data-op="*" aria-label="Multiply">×</button>
       <button class="op" data-op="/" aria-label="Divide">÷</button>
     </div>
-    <div class="result" aria-live="polite"><div><div class="label">CALCULATED RESULT</div><div class="note" id="result-type">Fill all three slots</div></div><strong id="result">—</strong></div>
-    <div class="calculation-details" aria-live="polite">
-      <div class="calculation-caption">YOUR COMPUTATION</div>
-      <div id="result-equation" class="result-equation">Choose both numbers and an operation to see your arithmetic.</div>
+    <div class="result" aria-live="polite"><div><div class="label">YOUR RESULT</div><div class="note" id="result-type">Fill all three slots</div></div><div class="result-values"><strong id="result">—</strong><div id="result-equation" class="result-equation">Choose both numbers and an operation.</div></div></div>
+    <div class="calculation-details">
+      <div class="calculation-caption">WHERE THE NUMBERS CAME FROM</div>
       <div id="result-sources" class="result-sources"></div>
     </div>
     <div id="calculation-trail" class="calculation-trail" hidden><div class="calculation-caption">SAVED STEPS</div><div id="calculation-steps"></div></div>
@@ -391,14 +392,26 @@ function calculate(){let a=slots.left?lookup(slots.left):null,b=slots.right?look
    }
    if(expectedExpr)detail.push('Expected calculation: '+expectedExpr+' = '+numberType(problem.unit,problem.answer)+'.');
   }else{
+   const costIndex=problem.ev/problem.ac;
+   const scheduledIndex=problem.ev/problem.pv;
+   const continuingEac=problem.bac/costIndex;
+   const plannedEac=problem.ac+(problem.bac-problem.ev);
+   const revisedTotal=problem.tiles.find(t=>t.id==='TARGET');
    const checks=[
-    ['(CPI) Cost Performance Index',problem.ev/problem.ac],
-    ['(SPI) Schedule Performance Index',problem.ev/problem.pv],
+    ['(CPI) Cost Performance Index',costIndex],
+    ['(SPI) Schedule Performance Index',scheduledIndex],
     ['remaining budgeted work',problem.bac-problem.ev],
-    ['unspent budget',problem.bac-problem.ac]
+    ['unspent budget',problem.bac-problem.ac],
+    ['(EAC) Estimate at Completion assuming current cost efficiency continues',continuingEac],
+    ['(EAC) Estimate at Completion assuming remaining work follows its original budget',plannedEac],
+    ['(ETC) Estimate to Complete under continuing cost efficiency',continuingEac-problem.ac],
+    ['(ETC) Estimate to Complete under planned remaining costs',problem.bac-problem.ev],
+    ['(VAC) Variance at Completion under continuing cost efficiency',problem.bac-continuingEac],
+    ['(VAC) Variance at Completion under planned remaining costs',problem.bac-plannedEac],
+    ...(revisedTotal?[['revised (EAC) Estimate at Completion',revisedTotal.value]]:[])
    ];
    const matched=checks.find(([name,v])=>closeEnough(actual,v)&&!closeEnough(v,problem.answer));
-   if(matched)detail.push('Your result matches '+matched[0]+', which is an intermediate measure—not the final result requested here.');
+   if(matched)detail.push('Your result numerically matches '+matched[0]+'. Check whether you used an intermediate measure or a different forecast assumption instead of the result requested.');
    else if(!memory.length)detail.push('This question requires several operations. Your current expression is just one step; save intermediate results as tiles and continue.');
    else detail.push('Check how you combined the saved results. The final operation or one of the intermediate steps does not match the requested calculation.');
    detail.push(METHOD_GUIDANCE[problem.kind]||'Compare your operation order with the worked solution below.');
@@ -407,7 +420,7 @@ function calculate(){let a=slots.left?lookup(slots.left):null,b=slots.right?look
    (memory.length?'\n\nYOUR SAVED STEPS\n'+memory.map((x,i)=>'Step '+(i+1)+': '+(x.expression||formattedValue(x))).join('\n'):'')+
    '\n\nWHAT WENT WRONG\n'+detail.join('\n')+
    '\n\nExpected answer: '+numberType(problem.unit,problem.answer)+(problem.unit==='plain'&&['PERCENT','PERCENT_SPENT','SV_PERCENT','COST_OVERRUN_PERCENT'].includes(problem.kind)?'%':'')+
-   '\nDifference: '+numberType(problem.unit,delta)+'.\n\n'+'Compare the worked solution below with your steps.';
+   '\nDifference: '+numberType(problem.unit,delta)+' ('+(actual>problem.answer?'your result is higher':'your result is lower')+').\n\n'+'Compare the worked solution below with your steps.';
  }
  function renderTrail(){
   const el=$('calculation-trail'),entries=$('calculation-steps');
