@@ -1,0 +1,11 @@
+{
+  "name": "Earned Value Analysis Offline Reviewer",
+  "short_name": "Earned Value",
+  "description": "Earned Value Analysis problem solving on iPhone",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1527",
+  "theme_color": "#0b1527",
+  "icons": [{"src":"./icon.svg","type":"image/svg+xml","sizes":"any"}]
+}
