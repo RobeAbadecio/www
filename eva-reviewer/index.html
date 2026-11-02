@@ -6,12 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0b1527">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon.svg">
 <title>Earned Value Analysis — Drag & Drop Reviewer</title>
 <style>
 :root {color-scheme:dark; --bg:#0b1527;--panel:#17243a;--panel2:#1c2d47;--line:#34465d;--ink:#eff5ff;--muted:#b0bfd4;--accent:#7de8c7;--accent2:#96b9ff;--gold:#f9ce7d;--red:#ff9aab;--radius:22px}
 * {box-sizing:border-box}html {scroll-behavior:smooth}body {margin:0;background:radial-gradient(ellipse at 80% -10%,#1c3b52 0,transparent 40%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh; padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom))}
 button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible,.drop:focus-visible{outline:3px solid var(--accent);outline-offset:3px}main{width:min(680px,100%);margin:auto;padding:16px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:7px 0 22px}.brand{display:flex;align-items:center;gap:11px}.brand-icon{height:42px;width:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,#70ead4,#a0b8ff);color:#112438;font-size:22px;font-weight:900;box-shadow:0 6px 25px #0005}.eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:850;color:var(--accent)}h1{font-size:21px;letter-spacing:-.65px;line-height:1.13;margin:4px 0 0}.top-count{border:1px solid var(--line);padding:9px 11px;border-radius:13px;text-align:center;white-space:nowrap;background:#1a2840}.top-count strong{font-size:19px;color:var(--gold);display:block;font-variant-numeric:tabular-nums}.top-count small{color:var(--muted);font-size:10px}.panel{background:linear-gradient(150deg,#1a2b44,#142137);border:1px solid #30415b;border-radius:var(--radius);box-shadow:0 14px 40px #0002;padding:20px;margin-bottom:13px}.cardtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:15px}.label{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;color:var(--muted)}.pill{font-size:11px;font-weight:800;color:#0c2830;background:var(--accent);padding:7px 10px;border-radius:100px}.question{font-size:24px;letter-spacing:-.55px;font-weight:820;line-height:1.25;margin:0 0 11px}.sub{color:var(--muted);font-size:13px;line-height:1.55;margin:0}.scenario{margin:17px 0 4px;padding:12px 15px;background:#0b1729;border:1px solid #27374d;border-radius:13px;color:#c5d4e7;font-size:13px;line-height:1.5}.miniheading{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:2px 0 12px}.miniheading h2{font-size:17px;margin:0;letter-spacing:-.3px}.note{font-size:11px;color:var(--muted)}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{min-width:0;min-height:76px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;justify-content:center;padding:11px 13px;border-radius:15px;border:1px solid #3d5570;background:#243954;box-shadow:inset 0 1px 0 #ffffff15;text-align:left;touch-action:none;user-select:none;-webkit-user-select:none;transition:background .15s,transform .15s,border-color .15s}.tile:active{transform:scale(.98)}.tile .tilelabel{color:#c8d8ec;font-size:11px;font-weight:650;line-height:1.25}.tile strong{font-size:18px;letter-spacing:-.35px;font-variant-numeric:tabular-nums;white-space:nowrap}.tile.computed{border-color:#508b81;background:#214442}.tile.computed .tilelabel{color:#bdfae4}.tile small{font-size:11px;color:var(--muted)}.workbench{background:linear-gradient(145deg,#1d304a,#101d30);border-color:#40516c}.slots{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr);gap:9px;margin-top:15px}.drop{min-width:0;min-height:102px;background:#0c192a;border:2px dashed #476079;border-radius:17px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:8px;text-align:center;user-select:none}.drop.active{border-color:var(--accent2);background:#1b3452}.drop.over{border-color:var(--accent);background:#21423d}.drop small{color:var(--muted);font-size:10px;line-height:1.2}.drop strong{font-size:16px;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.drop.oper strong{font-size:29px;color:var(--accent)}.drop.filled{border-style:solid;border-color:#537d8a}.ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0}.op{font-size:27px;font-weight:700;color:#dceaff;background:#2a3e59;border:1px solid #4a607d;border-radius:14px;min-height:53px;touch-action:none;user-select:none;-webkit-user-select:none}.op.selected{color:#0d2025;background:var(--accent);border-color:var(--accent)}.result{padding:14px 15px;background:#0a1727;border:1px solid #3c5368;border-radius:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}.result .label{font-size:10px}.result strong{font-size:27px;font-variant-numeric:tabular-nums;letter-spacing:-.8px;text-align:right;overflow-wrap:anywhere}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn{border-radius:13px;min-height:50px;font-size:14px;font-weight:800;padding:10px 12px;border:1px solid #536987;background:#2d425e}.btn.primary{border-color:var(--accent);color:#0a2425;background:var(--accent);box-shadow:0 8px 24px #1dbd8e17}.btn:disabled{opacity:.42;cursor:default}.btn.subtle{color:#c9daee;background:#172840}.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:9px;margin-top:14px}.textbtn{border:0;padding:7px 1px;color:#b2cffc;background:transparent;font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:4px}.feedback{border-radius:14px;padding:14px 15px;margin-top:13px;font-size:13px;line-height:1.55;background:#2e2a28;border:1px solid #716047}.feedback.good{background:#163c34;border-color:#3d9e80;color:#d1fff0}.feedback.bad{background:#452a35;border-color:#9a5c71;color:#ffe1e9}.feedback.hidden{display:none}.formula{font-size:13px;line-height:1.65;color:#d6e5fa;border:1px solid #46546c;border-radius:14px;padding:14px 15px;background:#111e31;margin-top:12px;white-space:pre-line}.formula[hidden],.hidden{display:none!important}.footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;gap:10px;margin:10px 3px 25px}.drawer{margin-bottom:18px}.drawer summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800}.drawer summary:after{content:'＋';font-size:20px;color:var(--accent)}.drawer[open] summary:after{content:'−'}.formula-list{display:grid;gap:12px;margin-top:17px}.formula-row{font-size:12px;border-top:1px solid var(--line);padding-top:11px;color:#cfdef0;line-height:1.5}.formula-row b{display:block;color:var(--accent);margin-bottom:3px}.tipbar{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.6}.tipbar b{color:#d9e6fa}.dragghost{position:fixed;z-index:9999;pointer-events:none;width:165px;padding:10px;border-radius:14px;border:2px solid var(--accent);background:#25435a;color:#fff;box-shadow:0 14px 35px #000a;transform:translate(-50%,-50%) scale(1.04);text-align:center;font-size:15px;font-weight:850;line-height:1.3}.fade{animation:slide .27s ease}@keyframes slide{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@media(max-width:380px){main{padding:12px}.panel{padding:16px}.question{font-size:22px}.tile strong{font-size:16px}.tile{padding:10px}.slots{grid-template-columns:minmax(0,1fr) 57px minmax(0,1fr);gap:6px}.drop{min-height:90px}.drop strong{font-size:14px}.drop.oper strong{font-size:24px}.result strong{font-size:23px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+#offline-status{margin:8px 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font-size:12px;color:var(--muted)}#offline-status.ready{color:var(--accent);border-color:#276457}.offline-note{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 2px 16px}
 </style>
 </head>
 <body>
@@ -20,6 +24,7 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
     <div class="brand"><div class="brand-icon" aria-hidden="true">∑</div><div><div class="eyebrow">Interactive project management</div><h1>Earned Value Analysis</h1></div></div>
     <div class="top-count"><strong id="score">0</strong><small>solved</small></div>
   </header>
+  <div id="offline-status" role="status">Preparing offline access…</div>
   <section class="panel" id="challenge">
     <div class="cardtop"><span class="label" id="question-counter">CHALLENGE 01</span><span class="pill" id="difficulty">FOUNDATION</span></div>
     <h2 class="question" id="question">Calculate project performance</h2>
@@ -63,11 +68,14 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
       <div class="formula-row"><b>(ETC) Estimate to Complete</b>(EAC) Estimate at Completion − (AC) Actual Cost</div>
       <div class="formula-row"><b>(VAC) Variance at Completion</b>(BAC) Budget at Completion − (EAC) Estimate at Completion</div>
       <div class="formula-row"><b>(TCPI) To-Complete Performance Index — original budget target</b>[(BAC) Budget at Completion − (EV) Earned Value] ÷ [(BAC) Budget at Completion − (AC) Actual Cost]</div>
-      <div class="formula-row"><b>Percent of budgeted work earned</b>[(EV) Earned Value ÷ (BAC) Budget at Completion] × 100</div>
+      <div class="formula-row"><b>(TCPI) To-Complete Performance Index — revised target</b>[(BAC) Budget at Completion − (EV) Earned Value] ÷ [revised (EAC) Estimate at Completion − (AC) Actual Cost]</div>
+       <div class="formula-row"><b>(EAC) Estimate at Completion — combined performance model</b>(AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index]</div>
+       <div class="formula-row"><b>Percent of budgeted work earned</b>[(EV) Earned Value ÷ (BAC) Budget at Completion] × 100</div>
       <div class="formula-row"><b>Approximate duration forecast (simplified)</b>Original duration ÷ (SPI) Schedule Performance Index. This is a simplified study model, not a reliable replacement for critical-path scheduling.</div>
     </div>
   </details>
-  <div class="footer"><span>Works offline · No account or internet required</span><button class="textbtn" id="restart">Reset statistics</button></div>
+  <p class="offline-note">For offline reviewing on iPhone: open this site online in Safari, then tap Share → Add to Home Screen. Your current question, tiles and progress are stored on this device. Clearing website data can remove saved progress.</p>
+  <div class="footer"><span>Auto-saves this question and score</span><button class="textbtn" id="restart">Reset statistics</button></div>
 </main>
 <script>
 (function(){'use strict';
@@ -78,7 +86,10 @@ const numeric=n=>Number.isInteger(n)?n.toLocaleString('en-PH'):Number(n.toFixed(
 const numberType=(unit,n)=>unit==='money'?money(n):numeric(n);
 let stats={solved:0,attempted:0,streak:0,best:0};
 try{const raw=JSON.parse(localStorage.getItem('eva-reviewer-statistics-v2'));if(raw&&Number.isFinite(raw.solved))stats={...stats,...raw};}catch(_e){}
-function persist(){try{localStorage.setItem('eva-reviewer-statistics-v2',JSON.stringify(stats));}catch(_e){}}
+function persist(){try{
+ localStorage.setItem('eva-reviewer-statistics-v2',JSON.stringify(stats));
+ if(problem)localStorage.setItem('eva-reviewer-session-v3',JSON.stringify({version:3,stats,problem,memory,slots,selected,solved,attempts,history,seen,hintVisible:$('hint').textContent==='Hide hint',solutionVisible:!$('solution').hidden,feedback:[$('feedback').className,$('feedback').textContent]}));
+}catch(_e){}}
 const r=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
 function build(kind){
  const bac=r(12,35)*100000;
@@ -104,25 +115,187 @@ function build(kind){
  case 'PERCENT':question='Calculate percentage of budgeted work earned';sub='Give your answer as a percentage number (for example, 65 means 65%).';answer=(ev/bac)*100;extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});formula=`Percentage earned = [(EV) Earned Value ÷ (BAC) Budget at Completion] × 100\n(${money(ev)} ÷ ${money(bac)}) × 100 = ${numeric(answer)}%`;break;
  case 'DURATION':question='Forecast project duration';sub='Use original duration ÷ (SPI) Schedule Performance Index. This is a simplified forecast, not a critical-path schedule.';answer=month/spi;extra.push({id:'MONTH',value:month,label:TERMS.MONTH,unit:'plain'});formula=`Step 1: (SPI) Schedule Performance Index = ${money(ev)} ÷ ${money(pv)} = ${numeric(spi)}\nStep 2: Forecast duration = ${month} ÷ (${ev} / ${pv}) = ${numeric(answer)} months`;break;
  case 'EAC_PLANNED':question='Calculate (EAC) Estimate at Completion';sub='Assume all remaining work will be completed at its originally budgeted cost, regardless of past overspending.';answer=ac+(bac-ev);formula=`Step 1: Budgeted cost of remaining work = (BAC) Budget at Completion − (EV) Earned Value = ${money(bac-ev)}\nStep 2: (EAC) Estimate at Completion = (AC) Actual Cost + remaining budgeted cost = ${money(ac)} + ${money(bac-ev)} = ${money(answer)}`;break;
+
+ case 'REMAINING_WORK':
+  question='Calculate remaining budgeted work';sub='How much value of the original approved budget is not yet earned?';
+  answer=bac-ev;formula='Remaining budgeted work = (BAC) Budget at Completion − (EV) Earned Value\n'+money(bac)+' − '+money(ev)+' = '+money(answer);break;
+ case 'REMAINING_FUNDS':
+  question='Calculate unspent funds under the original budget';sub='How much of the approved budget has not yet been spent?';
+  answer=bac-ac;formula='Remaining approved funds = (BAC) Budget at Completion − (AC) Actual Cost\n'+money(bac)+' − '+money(ac)+' = '+money(answer);break;
+ case 'ETC_PLANNED':
+  question='Calculate (ETC) Estimate to Complete';sub='Assume all unfinished work can be completed at its original planned cost.';
+  answer=bac-ev;formula='(ETC) Estimate to Complete = (BAC) Budget at Completion − (EV) Earned Value\n'+money(bac)+' − '+money(ev)+' = '+money(answer);break;
+ case 'VAC_PLANNED':
+  question='Calculate (VAC) Variance at Completion';sub='Assume unfinished work will follow its original budget, regardless of past cost performance.';
+  answer=ev-ac;formula='Step 1: (EAC) Estimate at Completion = (AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] = '+money(ac+bac-ev)+'\nStep 2: (VAC) Variance at Completion = (BAC) Budget at Completion − (EAC) Estimate at Completion = '+money(answer);break;
+ case 'TCPI_REVISED':{
+  const target=ac+Math.round((bac-ev)*r(80,145)/100/10000)*10000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (TCPI) To-Complete Performance Index';sub='Use the revised (EAC) Estimate at Completion cost target. Do not use the original total budget as the remaining spending allowance.';
+  answer=(bac-ev)/(target-ac);formula='Step 1: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 2: Remaining spending allowance = '+money(target)+' − '+money(ac)+' = '+money(target-ac)+'\nStep 3: (TCPI) To-Complete Performance Index = '+money(bac-ev)+' ÷ '+money(target-ac)+' = '+numeric(answer);break;
  }
- const plain=['CPI','SPI','TCPI','PERCENT','DURATION'].includes(kind);
- const tier=['CV','SV','CPI','SPI'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED'].includes(kind)?'INTERMEDIATE':'ADVANCED';
- const tiles=Object.keys(vals).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
- return {kind,question,sub,answer,formula,hint:hints[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac};
+ case 'EAC_ASSESSED':{
+  const forecastRemaining=r(5,17)*100000;
+  extra.push({id:'ASSESSED_ETC',value:forecastRemaining,label:'Reassessed (ETC) Estimate to Complete',unit:'money'});
+  question='Calculate (EAC) Estimate at Completion';sub='The project manager has prepared a bottom-up reassessment of the remaining work. Calculate the total projected cost.';
+  answer=ac+forecastRemaining;formula='(EAC) Estimate at Completion = (AC) Actual Cost + reassessed (ETC) Estimate to Complete\n'+money(ac)+' + '+money(forecastRemaining)+' = '+money(answer);break;
+ }
+ case 'ETC_REVISED':{
+  const target=ac+r(5,18)*100000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (ETC) Estimate to Complete';sub='Given the new full-project cost forecast, how much more will be spent to finish?';
+  answer=target-ac;formula='(ETC) Estimate to Complete = revised (EAC) Estimate at Completion − (AC) Actual Cost\n'+money(target)+' − '+money(ac)+' = '+money(answer);break;
+ }
+ case 'VAC_REVISED':{
+  const target=ac+r(5,18)*100000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (VAC) Variance at Completion';sub='Using the newly approved total cost forecast, calculate the predicted difference from the approved budget.';
+  answer=bac-target;formula='(VAC) Variance at Completion = (BAC) Budget at Completion − revised (EAC) Estimate at Completion\n'+money(bac)+' − '+money(target)+' = '+money(answer);break;
+ }
+ case 'EV_FROM_CV':{
+  const variance=ev-ac;
+  extra.push({id:'GIVEN_CV',value:variance,label:'Given (CV) Cost Variance',unit:'money'});
+  question='Find missing (EV) Earned Value';sub='The earned value figure is hidden. Recover it using the actual spending and signed cost variance.';
+  answer=ac+variance;formula='(EV) Earned Value = (AC) Actual Cost + (CV) Cost Variance\n'+money(ac)+' + ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'AC_FROM_CV':{
+  const variance=ev-ac;
+  extra.push({id:'GIVEN_CV',value:variance,label:'Given (CV) Cost Variance',unit:'money'});
+  question='Find missing (AC) Actual Cost';sub='The spending figure is hidden. Calculate it from earned value and the signed cost variance.';
+  answer=ev-variance;formula='(AC) Actual Cost = (EV) Earned Value − (CV) Cost Variance\n'+money(ev)+' − ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'EV_FROM_SV':{
+  const variance=ev-pv;
+  extra.push({id:'GIVEN_SV',value:variance,label:'Given (SV) Schedule Variance',unit:'money'});
+  question='Find missing (EV) Earned Value';sub='Recover the earned value using planned value and signed schedule variance.';
+  answer=pv+variance;formula='(EV) Earned Value = (PV) Planned Value + (SV) Schedule Variance\n'+money(pv)+' + ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'PV_FROM_SV':{
+  const variance=ev-pv;
+  extra.push({id:'GIVEN_SV',value:variance,label:'Given (SV) Schedule Variance',unit:'money'});
+  question='Find missing (PV) Planned Value';sub='Recover the planned value using earned value and signed schedule variance.';
+  answer=ev-variance;formula='(PV) Planned Value = (EV) Earned Value − (SV) Schedule Variance\n'+money(ev)+' − ('+money(variance)+') = '+money(answer);break;
+ }
+
+ case 'EV_FROM_PERCENT':{
+  const pct=[25,30,40,45,50,55,60,65,70,75,80][r(0,10)];
+  extra.push({id:'PCT',value:pct,label:'Completed budgeted work (%)',unit:'plain'},{id:'HUNDRED',value:100,label:'Percentage divisor',unit:'plain'});
+  question='Calculate (EV) Earned Value';sub='The team has completed '+pct+'% of the total budgeted work. Find the value earned so far.';
+  answer=bac*pct/100;
+  formula='(EV) Earned Value = (BAC) Budget at Completion × (completed percentage ÷ 100)\n'+money(bac)+' × ('+pct+' ÷ 100) = '+money(answer);break;
+ }
+ case 'PV_FROM_PERCENT':{
+  const pct=[25,30,40,45,50,55,60,65,70,75,80][r(0,10)];
+  extra.push({id:'PCT',value:pct,label:'Scheduled budgeted work (%)',unit:'plain'},{id:'HUNDRED',value:100,label:'Percentage divisor',unit:'plain'});
+  question='Calculate (PV) Planned Value';sub='By today, the approved schedule planned to finish '+pct+'% of total budgeted work.';
+  answer=bac*pct/100;
+  formula='(PV) Planned Value = (BAC) Budget at Completion × (scheduled percentage ÷ 100)\n'+money(bac)+' × ('+pct+' ÷ 100) = '+money(answer);break;
+ }
+ case 'PERCENT_SPENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate percentage of original budget spent';sub='Express (AC) Actual Cost as a percentage of (BAC) Budget at Completion. Enter a percentage number without the percent symbol.';
+  answer=ac/bac*100;formula='Percent spent = [(AC) Actual Cost ÷ (BAC) Budget at Completion] × 100\n('+money(ac)+' ÷ '+money(bac)+') × 100 = '+numeric(answer)+'%';break;
+ case 'SV_PERCENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate schedule variance as a percentage';sub='Measure (SV) Schedule Variance relative to (PV) Planned Value. Enter the signed percentage number.';
+  answer=(ev-pv)/pv*100;formula='Schedule variance % = [(EV) Earned Value − (PV) Planned Value] ÷ (PV) Planned Value × 100\n('+money(ev)+' − '+money(pv)+') ÷ '+money(pv)+' × 100 = '+numeric(answer)+'%';break;
+ case 'COST_OVERRUN_PERCENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate cost overrun relative to earned value';sub='A positive percentage indicates spending higher than earned value. Use (EV) Earned Value as the denominator.';
+  answer=(ac-ev)/ev*100;formula='Cost overrun % = [(AC) Actual Cost − (EV) Earned Value] ÷ (EV) Earned Value × 100\n('+money(ac)+' − '+money(ev)+') ÷ '+money(ev)+' × 100 = '+numeric(answer)+'%';break;
+ case 'EAC_COMBINED':{
+  question='Calculate (EAC) Estimate at Completion with combined cost and schedule performance';
+  sub='Model: (AC) Actual Cost + remaining budgeted work ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index]. Assume both inefficiencies affect remaining work.';
+  answer=ac+(bac-ev)/(cpi*spi);
+  formula='Step 1: (CPI) Cost Performance Index = '+money(ev)+' ÷ '+money(ac)+' = '+numeric(cpi)+'\nStep 2: (SPI) Schedule Performance Index = '+money(ev)+' ÷ '+money(pv)+' = '+numeric(spi)+'\nStep 3: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 4: (EAC) Estimate at Completion = '+money(ac)+' + ['+money(bac-ev)+' ÷ ('+numeric(cpi)+' × '+numeric(spi)+')] = '+money(answer);break;
+ }
+ case 'ETC_COMBINED':{
+  question='Calculate (ETC) Estimate to Complete with combined cost and schedule performance';
+  sub='Assume unfinished work is affected by both (CPI) Cost Performance Index and (SPI) Schedule Performance Index. Estimate remaining cost using remaining budgeted work ÷ their product.';
+  answer=(bac-ev)/(cpi*spi);
+  formula='Step 1: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 2: (CPI) Cost Performance Index = '+numeric(cpi)+'; (SPI) Schedule Performance Index = '+numeric(spi)+'\nStep 3: (ETC) Estimate to Complete = '+money(bac-ev)+' ÷ ('+numeric(cpi)+' × '+numeric(spi)+') = '+money(answer);break;
+ }
+ case 'VAC_COMBINED':{
+  question='Calculate (VAC) Variance at Completion with combined cost and schedule performance';
+  sub='Forecast (EAC) Estimate at Completion using cost and schedule performance together, then calculate the final budget variance.';
+  const forecast=ac+(bac-ev)/(cpi*spi);answer=bac-forecast;
+  formula='Step 1: (EAC) Estimate at Completion = (AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index] = '+money(forecast)+'\nStep 2: (VAC) Variance at Completion = '+money(bac)+' − '+money(forecast)+' = '+money(answer);break;
+ }
+ }
+ const plain=['CPI','SPI','TCPI','TCPI_REVISED','PERCENT','DURATION','PERCENT_SPENT','SV_PERCENT','COST_OVERRUN_PERCENT'].includes(kind);
+ const tier=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','ETC_PLANNED'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED','ETC','VAC_PLANNED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED','EV_FROM_PERCENT','PV_FROM_PERCENT','PERCENT_SPENT','SV_PERCENT','COST_OVERRUN_PERCENT'].includes(kind)?'INTERMEDIATE':'ADVANCED';
+ const hidden={EV_FROM_CV:['EV'],AC_FROM_CV:['AC'],EV_FROM_SV:['EV'],PV_FROM_SV:['PV'],EV_FROM_PERCENT:['EV'],PV_FROM_PERCENT:['PV']};
+ const tiles=Object.keys(vals).filter(id=>!(hidden[kind]||[]).includes(id)).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
+ const hintsMore={
+ REMAINING_WORK:'Focus on the approved value of unfinished work, not on cash remaining.',
+ REMAINING_FUNDS:'Compare the whole approved budget with money already spent.',
+ ETC_PLANNED:'Use the budgeted value of unfinished work, assuming no new cost inefficiency.',
+ VAC_PLANNED:'Forecast total cost using planned remaining work, and compare it with the original approved budget.',
+ TCPI_REVISED:'Use revised total completion spending as the cost target, rather than the original approved budget.',
+ EAC_ASSESSED:'The new bottom-up estimate is the cost of unfinished work, not the cost of the entire project.',
+ ETC_REVISED:'Separate money already spent from money still needed within the new whole-project forecast.',
+ VAC_REVISED:'The approved total budget and the revised total forecast are different quantities.',
+ EV_FROM_CV:'Rearrange the signed cost-variance equation to isolate earned value.',
+ AC_FROM_CV:'Rearrange the signed cost-variance equation; negative variance changes the effect of subtraction.',
+ EV_FROM_SV:'Find the missing earned value from planned value and a signed variance.',
+ PV_FROM_SV:'Rearrange schedule variance to isolate planned value.',
+ EV_FROM_PERCENT:'Convert the percentage into a fraction of the complete budget.',
+ PV_FROM_PERCENT:'Convert the planned percentage into the corresponding amount of the total budget.',
+ PERCENT_SPENT:'Determine the spending share of the original budget and convert it to percentage units.',
+ SV_PERCENT:'Normalize the schedule variance against planned value, not earned value.',
+ COST_OVERRUN_PERCENT:'Compare actual spending with earned value and preserve the sign of the difference.',
+ EAC_COMBINED:'Compute and save cost efficiency and schedule efficiency separately; this model requires both.',
+ ETC_COMBINED:'The remaining budgeted work must be adjusted for both efficiency ratios.',
+ VAC_COMBINED:'Predict full completion cost under the combined-efficiency assumption before finding the variance.'
+ };
+ const scenarios=['A campus information system','A mobile finance application','A retail inventory platform','A university registration system','An online appointment portal','A hotel reservation website','A warehouse management system','A health scheduling app','An enterprise data migration','A customer-support dashboard'];
+ return {kind,question,sub,answer,formula,hint:hints[kind]||hintsMore[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac,scenario:scenarios[r(0,scenarios.length-1)]};
 }
-let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0;
-function pickKind(){let n=stats.attempted;
- if(n===0)return 'CV';if(n===1)return 'SV';if(n===2)return 'CPI';if(n===3)return 'SPI';
- const rotation=['EAC','ETC','VAC','TCPI','PERCENT','DURATION','EAC_PLANNED','CV','SPI','SV','CPI'];
- return rotation[(n-4)%rotation.length];
+let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0,history=[],seen=[];
+let snapshot=null;
+try{const v=JSON.parse(localStorage.getItem('eva-reviewer-session-v3')||'null');
+ if(v&&v.version===3&&v.problem&&Array.isArray(v.problem.tiles)&&Number.isFinite(v.problem.answer)){
+  snapshot=v;
+  if(v.stats&&Number.isFinite(v.stats.attempted))stats={...stats,...v.stats};
+  history=Array.isArray(v.history)?v.history.slice(-100):[];
+  seen=Array.isArray(v.seen)?v.seen.slice(-1500):[];
+ }
+}catch(_e){}
+const allKinds=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','EV_FROM_PERCENT','PV_FROM_PERCENT','ETC_PLANNED','EAC_PLANNED','EAC','ETC','VAC','VAC_PLANNED','PERCENT','PERCENT_SPENT','DURATION','SV_PERCENT','COST_OVERRUN_PERCENT','TCPI','TCPI_REVISED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED','EAC_COMBINED','ETC_COMBINED','VAC_COMBINED'];
+function pickKind(){
+ const count=stats.attempted;
+ if(count<allKinds.length)return allKinds[count];
+ const recent=history.slice(-5);const options=allKinds.filter(k=>!recent.includes(k));
+ return options[Math.floor(Math.random()*options.length)];
 }
-function next(){problem=build(pickKind());stats.attempted++;persist();memory=[];slots={left:null,op:null,right:null};selected='left';solved=false;attempts=0;
- $('question-counter').textContent='CHALLENGE '+String(stats.attempted).padStart(2,'0');$('difficulty').textContent=problem.tier;
+function displayCurrent(scroll){
+ $('question-counter').textContent='CHALLENGE '+String(stats.attempted).padStart(2,'0');
+ $('difficulty').textContent=problem.tier;
  $('question').textContent=problem.question;$('question-sub').textContent=problem.sub;
- $('scenario').textContent='An application development project has the values listed below. Use any appropriate inputs to calculate the requested result.';
+ $('scenario').textContent=(problem.scenario||'An application development project')+' has the values listed below. Use the relevant inputs to calculate the requested result.';
  $('score').textContent=stats.solved;
- $('feedback').className='feedback hidden';$('feedback').textContent='';$('solution').hidden=true;$('solution').textContent='';$('reveal').textContent='Show worked solution';$('hint').textContent='Show hint';$('next').disabled=true;
- render(); $('challenge').classList.remove('fade');void $('challenge').offsetWidth;$('challenge').classList.add('fade');window.scrollTo({top:0,behavior:'smooth'});
+ $('feedback').className='feedback hidden';$('feedback').textContent='';
+ $('solution').hidden=true;$('solution').textContent='';
+ $('reveal').textContent='Show worked solution';$('hint').textContent='Show hint';
+ $('next').disabled=!solved;
+ if(snapshot){
+  if(snapshot.feedback&&Array.isArray(snapshot.feedback)){$('feedback').className=snapshot.feedback[0];$('feedback').textContent=snapshot.feedback[1];}
+  if(snapshot.hintVisible)$('hint').textContent='Hide hint';
+  if(snapshot.solutionVisible){$('solution').hidden=false;$('solution').textContent=problem.formula;$('reveal').textContent='Hide worked solution';}
+ }
+ render();
+ if(scroll){$('challenge').classList.remove('fade');void $('challenge').offsetWidth;$('challenge').classList.add('fade');window.scrollTo({top:0,behavior:'smooth'});}
+}
+function next(){
+ const kind=pickKind();let candidate,key='';
+ for(let i=0;i<40;i++){
+  candidate=build(kind);
+  key=[kind,candidate.bac,candidate.pv,candidate.ev,candidate.ac,candidate.answer,...candidate.tiles.slice(4).map(t=>t.value)].join(':');
+  if(!seen.includes(key))break;
+ }
+ problem=candidate;seen.push(key);seen=seen.slice(-1500);history.push(kind);history=history.slice(-100);
+ stats.attempted++;snapshot=null;memory=[];slots={left:null,op:null,right:null};selected='left';solved=false;attempts=0;
+ displayCurrent(true);
 }
 function lookup(id){return [...problem.tiles,...memory].find(t=>t.id===id)}
 function renderTiles(){const parent=$('tiles');parent.innerHTML='';for(const t of [...problem.tiles,...memory]){
@@ -144,6 +317,7 @@ function render(){renderTiles();for(const slot of ['left','op','right']){
  for(const b of document.querySelectorAll('.op'))b.classList.toggle('selected',slots.op===b.dataset.op);
  let result=calculate();$('result').textContent=result?numberType(result.unit,result.value):'—';$('result-type').textContent=result?(result.unit==='money'?'Monetary result':'Number / index'):'Fill all three slots';
  $('save').disabled=!result||solved||memory.length>=10;$('check').disabled=!result||solved;
+ persist();
 }
 function writeToken(token,slot){if(solved)return;
  if(token.kind==='operator'){
@@ -168,17 +342,33 @@ function hookDrag(el,token){el.addEventListener('click',()=>{if(el.dataset.wasDr
  });}
 for(const b of document.querySelectorAll('.op'))hookDrag(b,{kind:'operator',id:b.dataset.op});
 for(const b of document.querySelectorAll('.drop'))b.addEventListener('click',()=>{const slot=b.dataset.slot;if(slots[slot])slots[slot]=null;selected=slot;render();});
-$('save').addEventListener('click',()=>{const calc=calculate();if(!calc||solved)return;const id='MEM'+(memory.length+1);memory.push({id,label:'Saved intermediate result '+(memory.length+1),unit:calc.unit,value:calc.value});slots={left:null,op:null,right:null};selected='left';render();$('feedback').className='feedback';$('feedback').textContent='Saved! Drag the new green number tile into your next calculation.';});
+$('save').addEventListener('click',()=>{const calc=calculate();if(!calc||solved)return;const id='MEM'+(memory.length+1);memory.push({id,label:'Saved intermediate result '+(memory.length+1),unit:calc.unit,value:calc.value});slots={left:null,op:null,right:null};selected='left';render();$('feedback').className='feedback';$('feedback').textContent='Saved! Drag the new green number tile into your next calculation.';persist();});
 $('check').addEventListener('click',()=>{let result=calculate();if(!result||solved)return;attempts++;let tolerance=Math.max(0.000001,Math.abs(problem.answer)*0.000001);const correct=Math.abs(result.value-problem.answer)<=tolerance;
  if(correct){solved=true;stats.solved++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);persist();$('score').textContent=stats.solved;$('feedback').className='feedback good';$('feedback').textContent='✓ Correct! '+numberType(problem.unit,problem.answer)+(problem.kind==='PERCENT'?'%':problem.kind==='DURATION'?' months':'')+'. '+(attempts===1?'Solved on your first try. ':'')+'Ready for the next challenge?';$('next').disabled=false;}
  else{stats.streak=0;persist();$('feedback').className='feedback bad';$('feedback').textContent='Not quite. Your expression equals '+numberType(result.unit,result.value)+'. You can replace the numbers or operator and try again. Use a hint or save an intermediate result if this needs multiple steps.';}
  render();});
 $('next').addEventListener('click',next);$('skip').addEventListener('click',()=>{stats.streak=0;persist();next()});
 $('reset').addEventListener('click',()=>{slots={left:null,op:null,right:null};selected='left';$('feedback').className='feedback hidden';render()});
-$('hint').addEventListener('click',()=>{if($('hint').textContent==='Hide hint'){$('feedback').className='feedback hidden';$('hint').textContent='Show hint';return;}$('feedback').className='feedback';$('feedback').textContent='Hint: '+problem.hint;$('hint').textContent='Hide hint'});
-$('reveal').addEventListener('click',()=>{const el=$('solution');el.hidden=!el.hidden;if(!el.hidden)el.textContent=problem.formula;$('reveal').textContent=el.hidden?'Show worked solution':'Hide worked solution'});
-$('restart').addEventListener('click',()=>{if(!confirm('Reset your score and restart from challenge 1?'))return;stats={solved:0,attempted:0,streak:0,best:0};persist();next()});
-next();
+$('hint').addEventListener('click',()=>{if($('hint').textContent==='Hide hint'){$('feedback').className='feedback hidden';$('hint').textContent='Show hint';return;}$('feedback').className='feedback';$('feedback').textContent='Hint: '+problem.hint;$('hint').textContent='Hide hint';persist()});
+$('reveal').addEventListener('click',()=>{const el=$('solution');el.hidden=!el.hidden;if(!el.hidden)el.textContent=problem.formula;$('reveal').textContent=el.hidden?'Show worked solution':'Hide worked solution';persist()});
+$('restart').addEventListener('click',()=>{if(!confirm('Reset your score and restart from challenge 1?'))return;stats={solved:0,attempted:0,streak:0,best:0};history=[];seen=[];snapshot=null;next()});
+if(snapshot){
+ problem=snapshot.problem;memory=Array.isArray(snapshot.memory)?snapshot.memory.slice(0,10):[];
+ slots=snapshot.slots||{left:null,op:null,right:null};selected=snapshot.selected||'left';
+ solved=!!snapshot.solved;attempts=Number(snapshot.attempts)||0;
+ displayCurrent(false);
+}else next();
+const status=$('offline-status');
+const refreshStatus=()=>{
+ if(!navigator.onLine){status.textContent='Offline mode · You can continue your saved practice.';status.classList.add('ready');}
+ else if(navigator.serviceWorker&&navigator.serviceWorker.controller){status.textContent='Offline access enabled · Your practice is saved on this device.';status.classList.add('ready');}
+ else status.textContent='Online · Preparing offline access. In Safari, add to Home Screen after loading.';
+};
+window.addEventListener('online',refreshStatus);window.addEventListener('offline',refreshStatus);
+refreshStatus();
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{status.textContent='Offline-ready after first full online load · Progress saves automatically.';status.classList.add('ready');}).catch(()=>{status.textContent='Offline setup is unavailable in this browser. Open in Safari and add to Home Screen.';});
+}
 })();
 </script>
 </body>
