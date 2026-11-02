@@ -68,7 +68,9 @@ button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:tr
       <div class="formula-row"><b>(ETC) Estimate to Complete</b>(EAC) Estimate at Completion − (AC) Actual Cost</div>
       <div class="formula-row"><b>(VAC) Variance at Completion</b>(BAC) Budget at Completion − (EAC) Estimate at Completion</div>
       <div class="formula-row"><b>(TCPI) To-Complete Performance Index — original budget target</b>[(BAC) Budget at Completion − (EV) Earned Value] ÷ [(BAC) Budget at Completion − (AC) Actual Cost]</div>
-      <div class="formula-row"><b>Percent of budgeted work earned</b>[(EV) Earned Value ÷ (BAC) Budget at Completion] × 100</div>
+      <div class="formula-row"><b>(TCPI) To-Complete Performance Index — revised target</b>[(BAC) Budget at Completion − (EV) Earned Value] ÷ [revised (EAC) Estimate at Completion − (AC) Actual Cost]</div>
+       <div class="formula-row"><b>(EAC) Estimate at Completion — combined performance model</b>(AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index]</div>
+       <div class="formula-row"><b>Percent of budgeted work earned</b>[(EV) Earned Value ÷ (BAC) Budget at Completion] × 100</div>
       <div class="formula-row"><b>Approximate duration forecast (simplified)</b>Original duration ÷ (SPI) Schedule Performance Index. This is a simplified study model, not a reliable replacement for critical-path scheduling.</div>
     </div>
   </details>
@@ -174,12 +176,80 @@ function build(kind){
   question='Find missing (PV) Planned Value';sub='Recover the planned value using earned value and signed schedule variance.';
   answer=ev-variance;formula='(PV) Planned Value = (EV) Earned Value − (SV) Schedule Variance\n'+money(ev)+' − ('+money(variance)+') = '+money(answer);break;
  }
+
+ case 'EV_FROM_PERCENT':{
+  const pct=[25,30,40,45,50,55,60,65,70,75,80][r(0,10)];
+  extra.push({id:'PCT',value:pct,label:'Completed budgeted work (%)',unit:'plain'},{id:'HUNDRED',value:100,label:'Percentage divisor',unit:'plain'});
+  question='Calculate (EV) Earned Value';sub='The team has completed '+pct+'% of the total budgeted work. Find the value earned so far.';
+  answer=bac*pct/100;
+  formula='(EV) Earned Value = (BAC) Budget at Completion × (completed percentage ÷ 100)\n'+money(bac)+' × ('+pct+' ÷ 100) = '+money(answer);break;
  }
- const plain=['CPI','SPI','TCPI','TCPI_REVISED','PERCENT','DURATION'].includes(kind);
- const tier=['CV','SV','CPI','SPI'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED'].includes(kind)?'INTERMEDIATE':'ADVANCED';
- const hidden={EV_FROM_CV:['EV'],AC_FROM_CV:['AC'],EV_FROM_SV:['EV'],PV_FROM_SV:['PV']};
+ case 'PV_FROM_PERCENT':{
+  const pct=[25,30,40,45,50,55,60,65,70,75,80][r(0,10)];
+  extra.push({id:'PCT',value:pct,label:'Scheduled budgeted work (%)',unit:'plain'},{id:'HUNDRED',value:100,label:'Percentage divisor',unit:'plain'});
+  question='Calculate (PV) Planned Value';sub='By today, the approved schedule planned to finish '+pct+'% of total budgeted work.';
+  answer=bac*pct/100;
+  formula='(PV) Planned Value = (BAC) Budget at Completion × (scheduled percentage ÷ 100)\n'+money(bac)+' × ('+pct+' ÷ 100) = '+money(answer);break;
+ }
+ case 'PERCENT_SPENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate percentage of original budget spent';sub='Express (AC) Actual Cost as a percentage of (BAC) Budget at Completion. Enter a percentage number without the percent symbol.';
+  answer=ac/bac*100;formula='Percent spent = [(AC) Actual Cost ÷ (BAC) Budget at Completion] × 100\n('+money(ac)+' ÷ '+money(bac)+') × 100 = '+numeric(answer)+'%';break;
+ case 'SV_PERCENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate schedule variance as a percentage';sub='Measure (SV) Schedule Variance relative to (PV) Planned Value. Enter the signed percentage number.';
+  answer=(ev-pv)/pv*100;formula='Schedule variance % = [(EV) Earned Value − (PV) Planned Value] ÷ (PV) Planned Value × 100\n('+money(ev)+' − '+money(pv)+') ÷ '+money(pv)+' × 100 = '+numeric(answer)+'%';break;
+ case 'COST_OVERRUN_PERCENT':
+  extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});
+  question='Calculate cost overrun relative to earned value';sub='A positive percentage indicates spending higher than earned value. Use (EV) Earned Value as the denominator.';
+  answer=(ac-ev)/ev*100;formula='Cost overrun % = [(AC) Actual Cost − (EV) Earned Value] ÷ (EV) Earned Value × 100\n('+money(ac)+' − '+money(ev)+') ÷ '+money(ev)+' × 100 = '+numeric(answer)+'%';break;
+ case 'EAC_COMBINED':{
+  question='Calculate (EAC) Estimate at Completion with combined cost and schedule performance';
+  sub='Model: (AC) Actual Cost + remaining budgeted work ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index]. Assume both inefficiencies affect remaining work.';
+  answer=ac+(bac-ev)/(cpi*spi);
+  formula='Step 1: (CPI) Cost Performance Index = '+money(ev)+' ÷ '+money(ac)+' = '+numeric(cpi)+'\nStep 2: (SPI) Schedule Performance Index = '+money(ev)+' ÷ '+money(pv)+' = '+numeric(spi)+'\nStep 3: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 4: (EAC) Estimate at Completion = '+money(ac)+' + ['+money(bac-ev)+' ÷ ('+numeric(cpi)+' × '+numeric(spi)+')] = '+money(answer);break;
+ }
+ case 'ETC_COMBINED':{
+  question='Calculate (ETC) Estimate to Complete with combined cost and schedule performance';
+  sub='Assume unfinished work is affected by both (CPI) Cost Performance Index and (SPI) Schedule Performance Index. Estimate remaining cost using remaining budgeted work ÷ their product.';
+  answer=(bac-ev)/(cpi*spi);
+  formula='Step 1: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 2: (CPI) Cost Performance Index = '+numeric(cpi)+'; (SPI) Schedule Performance Index = '+numeric(spi)+'\nStep 3: (ETC) Estimate to Complete = '+money(bac-ev)+' ÷ ('+numeric(cpi)+' × '+numeric(spi)+') = '+money(answer);break;
+ }
+ case 'VAC_COMBINED':{
+  question='Calculate (VAC) Variance at Completion with combined cost and schedule performance';
+  sub='Forecast (EAC) Estimate at Completion using cost and schedule performance together, then calculate the final budget variance.';
+  const forecast=ac+(bac-ev)/(cpi*spi);answer=bac-forecast;
+  formula='Step 1: (EAC) Estimate at Completion = (AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] ÷ [(CPI) Cost Performance Index × (SPI) Schedule Performance Index] = '+money(forecast)+'\nStep 2: (VAC) Variance at Completion = '+money(bac)+' − '+money(forecast)+' = '+money(answer);break;
+ }
+ }
+ const plain=['CPI','SPI','TCPI','TCPI_REVISED','PERCENT','DURATION','PERCENT_SPENT','SV_PERCENT','COST_OVERRUN_PERCENT'].includes(kind);
+ const tier=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','ETC_PLANNED'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED','ETC','VAC_PLANNED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED','EV_FROM_PERCENT','PV_FROM_PERCENT','PERCENT_SPENT','SV_PERCENT','COST_OVERRUN_PERCENT'].includes(kind)?'INTERMEDIATE':'ADVANCED';
+ const hidden={EV_FROM_CV:['EV'],AC_FROM_CV:['AC'],EV_FROM_SV:['EV'],PV_FROM_SV:['PV'],EV_FROM_PERCENT:['EV'],PV_FROM_PERCENT:['PV']};
  const tiles=Object.keys(vals).filter(id=>!(hidden[kind]||[]).includes(id)).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
- return {kind,question,sub,answer,formula,hint:hints[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac};
+ const hintsMore={
+ REMAINING_WORK:'Focus on the approved value of unfinished work, not on cash remaining.',
+ REMAINING_FUNDS:'Compare the whole approved budget with money already spent.',
+ ETC_PLANNED:'Use the budgeted value of unfinished work, assuming no new cost inefficiency.',
+ VAC_PLANNED:'Forecast total cost using planned remaining work, and compare it with the original approved budget.',
+ TCPI_REVISED:'Use revised total completion spending as the cost target, rather than the original approved budget.',
+ EAC_ASSESSED:'The new bottom-up estimate is the cost of unfinished work, not the cost of the entire project.',
+ ETC_REVISED:'Separate money already spent from money still needed within the new whole-project forecast.',
+ VAC_REVISED:'The approved total budget and the revised total forecast are different quantities.',
+ EV_FROM_CV:'Rearrange the signed cost-variance equation to isolate earned value.',
+ AC_FROM_CV:'Rearrange the signed cost-variance equation; negative variance changes the effect of subtraction.',
+ EV_FROM_SV:'Find the missing earned value from planned value and a signed variance.',
+ PV_FROM_SV:'Rearrange schedule variance to isolate planned value.',
+ EV_FROM_PERCENT:'Convert the percentage into a fraction of the complete budget.',
+ PV_FROM_PERCENT:'Convert the planned percentage into the corresponding amount of the total budget.',
+ PERCENT_SPENT:'Determine the spending share of the original budget and convert it to percentage units.',
+ SV_PERCENT:'Normalize the schedule variance against planned value, not earned value.',
+ COST_OVERRUN_PERCENT:'Compare actual spending with earned value and preserve the sign of the difference.',
+ EAC_COMBINED:'Compute and save cost efficiency and schedule efficiency separately; this model requires both.',
+ ETC_COMBINED:'The remaining budgeted work must be adjusted for both efficiency ratios.',
+ VAC_COMBINED:'Predict full completion cost under the combined-efficiency assumption before finding the variance.'
+ };
+ const scenarios=['A campus information system','A mobile finance application','A retail inventory platform','A university registration system','An online appointment portal','A hotel reservation website','A warehouse management system','A health scheduling app','An enterprise data migration','A customer-support dashboard'];
+ return {kind,question,sub,answer,formula,hint:hints[kind]||hintsMore[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac,scenario:scenarios[r(0,scenarios.length-1)]};
 }
 let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0,history=[],seen=[];
 let snapshot=null;
@@ -191,11 +261,11 @@ try{const v=JSON.parse(localStorage.getItem('eva-reviewer-session-v3')||'null');
   seen=Array.isArray(v.seen)?v.seen.slice(-1500):[];
  }
 }catch(_e){}
-const allKinds=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','EAC','EAC_PLANNED','ETC_PLANNED','ETC','VAC','VAC_PLANNED','PERCENT','DURATION','TCPI','TCPI_REVISED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED'];
+const allKinds=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','EV_FROM_PERCENT','PV_FROM_PERCENT','ETC_PLANNED','EAC_PLANNED','EAC','ETC','VAC','VAC_PLANNED','PERCENT','PERCENT_SPENT','DURATION','SV_PERCENT','COST_OVERRUN_PERCENT','TCPI','TCPI_REVISED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED','EAC_COMBINED','ETC_COMBINED','VAC_COMBINED'];
 function pickKind(){
  const count=stats.attempted;
  if(count<allKinds.length)return allKinds[count];
- const recent=history.slice(-3);const options=allKinds.filter(k=>!recent.includes(k));
+ const recent=history.slice(-5);const options=allKinds.filter(k=>!recent.includes(k));
  return options[Math.floor(Math.random()*options.length)];
 }
 function displayCurrent(scroll){
