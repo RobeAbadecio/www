@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1527">
+<title>Earned Value Analysis — Drag & Drop Reviewer</title>
+<style>
+:root {color-scheme:dark; --bg:#0b1527;--panel:#17243a;--panel2:#1c2d47;--line:#34465d;--ink:#eff5ff;--muted:#b0bfd4;--accent:#7de8c7;--accent2:#96b9ff;--gold:#f9ce7d;--red:#ff9aab;--radius:22px}
+* {box-sizing:border-box}html {scroll-behavior:smooth}body {margin:0;background:radial-gradient(ellipse at 80% -10%,#1c3b52 0,transparent 40%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh; padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom))}
+button {font:inherit;cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible,.drop:focus-visible{outline:3px solid var(--accent);outline-offset:3px}main{width:min(680px,100%);margin:auto;padding:16px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:7px 0 22px}.brand{display:flex;align-items:center;gap:11px}.brand-icon{height:42px;width:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,#70ead4,#a0b8ff);color:#112438;font-size:22px;font-weight:900;box-shadow:0 6px 25px #0005}.eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:850;color:var(--accent)}h1{font-size:21px;letter-spacing:-.65px;line-height:1.13;margin:4px 0 0}.top-count{border:1px solid var(--line);padding:9px 11px;border-radius:13px;text-align:center;white-space:nowrap;background:#1a2840}.top-count strong{font-size:19px;color:var(--gold);display:block;font-variant-numeric:tabular-nums}.top-count small{color:var(--muted);font-size:10px}.panel{background:linear-gradient(150deg,#1a2b44,#142137);border:1px solid #30415b;border-radius:var(--radius);box-shadow:0 14px 40px #0002;padding:20px;margin-bottom:13px}.cardtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:15px}.label{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;color:var(--muted)}.pill{font-size:11px;font-weight:800;color:#0c2830;background:var(--accent);padding:7px 10px;border-radius:100px}.question{font-size:24px;letter-spacing:-.55px;font-weight:820;line-height:1.25;margin:0 0 11px}.sub{color:var(--muted);font-size:13px;line-height:1.55;margin:0}.scenario{margin:17px 0 4px;padding:12px 15px;background:#0b1729;border:1px solid #27374d;border-radius:13px;color:#c5d4e7;font-size:13px;line-height:1.5}.miniheading{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:2px 0 12px}.miniheading h2{font-size:17px;margin:0;letter-spacing:-.3px}.note{font-size:11px;color:var(--muted)}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{min-width:0;min-height:76px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;justify-content:center;padding:11px 13px;border-radius:15px;border:1px solid #3d5570;background:#243954;box-shadow:inset 0 1px 0 #ffffff15;text-align:left;touch-action:none;user-select:none;-webkit-user-select:none;transition:background .15s,transform .15s,border-color .15s}.tile:active{transform:scale(.98)}.tile .tilelabel{color:#c8d8ec;font-size:11px;font-weight:650;line-height:1.25}.tile strong{font-size:18px;letter-spacing:-.35px;font-variant-numeric:tabular-nums;white-space:nowrap}.tile.computed{border-color:#508b81;background:#214442}.tile.computed .tilelabel{color:#bdfae4}.tile small{font-size:11px;color:var(--muted)}.workbench{background:linear-gradient(145deg,#1d304a,#101d30);border-color:#40516c}.slots{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr);gap:9px;margin-top:15px}.drop{min-width:0;min-height:102px;background:#0c192a;border:2px dashed #476079;border-radius:17px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:8px;text-align:center;user-select:none}.drop.active{border-color:var(--accent2);background:#1b3452}.drop.over{border-color:var(--accent);background:#21423d}.drop small{color:var(--muted);font-size:10px;line-height:1.2}.drop strong{font-size:16px;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.drop.oper strong{font-size:29px;color:var(--accent)}.drop.filled{border-style:solid;border-color:#537d8a}.ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0}.op{font-size:27px;font-weight:700;color:#dceaff;background:#2a3e59;border:1px solid #4a607d;border-radius:14px;min-height:53px;touch-action:none;user-select:none;-webkit-user-select:none}.op.selected{color:#0d2025;background:var(--accent);border-color:var(--accent)}.result{padding:14px 15px;background:#0a1727;border:1px solid #3c5368;border-radius:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}.result .label{font-size:10px}.result strong{font-size:27px;font-variant-numeric:tabular-nums;letter-spacing:-.8px;text-align:right;overflow-wrap:anywhere}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn{border-radius:13px;min-height:50px;font-size:14px;font-weight:800;padding:10px 12px;border:1px solid #536987;background:#2d425e}.btn.primary{border-color:var(--accent);color:#0a2425;background:var(--accent);box-shadow:0 8px 24px #1dbd8e17}.btn:disabled{opacity:.42;cursor:default}.btn.subtle{color:#c9daee;background:#172840}.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:9px;margin-top:14px}.textbtn{border:0;padding:7px 1px;color:#b2cffc;background:transparent;font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:4px}.feedback{border-radius:14px;padding:14px 15px;margin-top:13px;font-size:13px;line-height:1.55;background:#2e2a28;border:1px solid #716047}.feedback.good{background:#163c34;border-color:#3d9e80;color:#d1fff0}.feedback.bad{background:#452a35;border-color:#9a5c71;color:#ffe1e9}.feedback.hidden{display:none}.formula{font-size:13px;line-height:1.65;color:#d6e5fa;border:1px solid #46546c;border-radius:14px;padding:14px 15px;background:#111e31;margin-top:12px;white-space:pre-line}.formula[hidden],.hidden{display:none!important}.footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;gap:10px;margin:10px 3px 25px}.drawer{margin-bottom:18px}.drawer summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800}.drawer summary:after{content:'＋';font-size:20px;color:var(--accent)}.drawer[open] summary:after{content:'−'}.formula-list{display:grid;gap:12px;margin-top:17px}.formula-row{font-size:12px;border-top:1px solid var(--line);padding-top:11px;color:#cfdef0;line-height:1.5}.formula-row b{display:block;color:var(--accent);margin-bottom:3px}.tipbar{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.6}.tipbar b{color:#d9e6fa}.dragghost{position:fixed;z-index:9999;pointer-events:none;width:165px;padding:10px;border-radius:14px;border:2px solid var(--accent);background:#25435a;color:#fff;box-shadow:0 14px 35px #000a;transform:translate(-50%,-50%) scale(1.04);text-align:center;font-size:15px;font-weight:850;line-height:1.3}.fade{animation:slide .27s ease}@keyframes slide{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@media(max-width:380px){main{padding:12px}.panel{padding:16px}.question{font-size:22px}.tile strong{font-size:16px}.tile{padding:10px}.slots{grid-template-columns:minmax(0,1fr) 57px minmax(0,1fr);gap:6px}.drop{min-height:90px}.drop strong{font-size:14px}.drop.oper strong{font-size:24px}.result strong{font-size:23px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><div class="brand-icon" aria-hidden="true">∑</div><div><div class="eyebrow">Interactive project management</div><h1>Earned Value Analysis</h1></div></div>
+    <div class="top-count"><strong id="score">0</strong><small>solved</small></div>
+  </header>
+  <section class="panel" id="challenge">
+    <div class="cardtop"><span class="label" id="question-counter">CHALLENGE 01</span><span class="pill" id="difficulty">FOUNDATION</span></div>
+    <h2 class="question" id="question">Calculate project performance</h2>
+    <p class="sub" id="question-sub">Use the data below to build a calculation.</p>
+    <div class="scenario" id="scenario"></div>
+  </section>
+  <section class="panel" id="values-panel">
+    <div class="miniheading"><h2>Number tiles</h2><span class="note">Drag or tap</span></div>
+    <div class="tiles" id="tiles"></div>
+    <p class="tipbar"><b>How to play:</b> Drag a number to each side and an operator into the middle. Or tap them in sequence. For multi-step problems, save the result as a new tile.</p>
+  </section>
+  <section class="panel workbench" id="workbench">
+    <div class="miniheading"><h2>Your calculation</h2><span class="note">Build an expression</span></div>
+    <div class="slots">
+      <button class="drop active" id="slot-left" data-slot="left" aria-label="First number, tap to select"><small>FIRST NUMBER</small><strong>Drop here</strong></button>
+      <button class="drop oper" id="slot-op" data-slot="op" aria-label="Arithmetic operation, tap to select"><small>OPERATOR</small><strong>?</strong></button>
+      <button class="drop" id="slot-right" data-slot="right" aria-label="Second number, tap to select"><small>SECOND NUMBER</small><strong>Drop here</strong></button>
+    </div>
+    <div class="ops" aria-label="Arithmetic operations">
+      <button class="op" data-op="+" aria-label="Add">+</button>
+      <button class="op" data-op="-" aria-label="Subtract">−</button>
+      <button class="op" data-op="*" aria-label="Multiply">×</button>
+      <button class="op" data-op="/" aria-label="Divide">÷</button>
+    </div>
+    <div class="result" aria-live="polite"><div><div class="label">CALCULATED RESULT</div><div class="note" id="result-type">Fill all three slots</div></div><strong id="result">—</strong></div>
+    <div class="actions"><button class="btn subtle" id="save" disabled>＋ Save result as tile</button><button class="btn primary" id="check" disabled>Check answer</button></div>
+    <div id="feedback" class="feedback hidden" role="status"></div>
+    <div id="solution" class="formula" hidden></div>
+    <div class="toolbar"><button class="textbtn" id="hint">Show hint</button><button class="textbtn" id="reveal">Show worked solution</button><button class="textbtn" id="reset">Clear calculation</button></div>
+    <div class="actions"><button class="btn subtle" id="skip">Skip problem</button><button class="btn primary" id="next" disabled>Next challenge →</button></div>
+  </section>
+  <details class="panel drawer">
+    <summary>Formula reference &amp; glossary</summary>
+    <div class="formula-list">
+      <div class="formula-row"><b>(CV) Cost Variance</b>(EV) Earned Value − (AC) Actual Cost</div>
+      <div class="formula-row"><b>(SV) Schedule Variance</b>(EV) Earned Value − (PV) Planned Value</div>
+      <div class="formula-row"><b>(CPI) Cost Performance Index</b>(EV) Earned Value ÷ (AC) Actual Cost</div>
+      <div class="formula-row"><b>(SPI) Schedule Performance Index</b>(EV) Earned Value ÷ (PV) Planned Value</div>
+      <div class="formula-row"><b>(EAC) Estimate at Completion — current cost efficiency continues</b>(BAC) Budget at Completion ÷ (CPI) Cost Performance Index</div>
+      <div class="formula-row"><b>(EAC) Estimate at Completion — remaining work at planned cost</b>(AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value]</div>
+      <div class="formula-row"><b>(ETC) Estimate to Complete</b>(EAC) Estimate at Completion − (AC) Actual Cost</div>
+      <div class="formula-row"><b>(VAC) Variance at Completion</b>(BAC) Budget at Completion − (EAC) Estimate at Completion</div>
+      <div class="formula-row"><b>(TCPI) To-Complete Performance Index — original budget target</b>[(BAC) Budget at Completion − (EV) Earned Value] ÷ [(BAC) Budget at Completion − (AC) Actual Cost]</div>
+      <div class="formula-row"><b>Percent of budgeted work earned</b>[(EV) Earned Value ÷ (BAC) Budget at Completion] × 100</div>
+      <div class="formula-row"><b>Approximate duration forecast (simplified)</b>Original duration ÷ (SPI) Schedule Performance Index. This is a simplified study model, not a reliable replacement for critical-path scheduling.</div>
+    </div>
+  </details>
+  <div class="footer"><span>Works offline · No account or internet required</span><button class="textbtn" id="restart">Reset statistics</button></div>
+</main>
+<script>
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+const TERMS={BAC:'(BAC) Budget at Completion',PV:'(PV) Planned Value',EV:'(EV) Earned Value',AC:'(AC) Actual Cost',MONTH:'Original project duration'};
+const money=n=>(n<0?'−₱':'₱')+Math.abs(Math.round(n)).toLocaleString('en-PH');
+const numeric=n=>Number.isInteger(n)?n.toLocaleString('en-PH'):Number(n.toFixed(4)).toLocaleString('en-PH',{maximumFractionDigits:4});
+const numberType=(unit,n)=>unit==='money'?money(n):numeric(n);
+let stats={solved:0,attempted:0,streak:0,best:0};
+try{const raw=JSON.parse(localStorage.getItem('eva-reviewer-statistics-v2'));if(raw&&Number.isFinite(raw.solved))stats={...stats,...raw};}catch(_e){}
+function persist(){try{localStorage.setItem('eva-reviewer-statistics-v2',JSON.stringify(stats));}catch(_e){}}
+const r=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
+function build(kind){
+ const bac=r(12,35)*100000;
+ const pv=Math.round(bac*(r(42,70)/100)/10000)*10000;
+ const ev=Math.round(pv*(r(70,125)/100)/10000)*10000;
+ const ac=Math.min(Math.round(ev*(r(82,132)/100)/10000)*10000,bac-10000);
+ const vals={BAC:bac,PV:pv,EV:ev,AC:ac};
+ const cpi=ev/ac,spi=ev/pv;
+ const eac=bac/cpi, etc=eac-ac, vac=bac-eac;
+ const month=[12,18,24,30][r(0,3)];
+ const hints={CV:'For cost variance, contrast value earned with money actually spent. The direction of subtraction determines whether the result is positive or negative.',SV:'Schedule variance compares completed work against the amount scheduled by this point.',CPI:'Think about the value produced for every peso of actual spending.',SPI:'Think about earned progress compared with the value that should have been completed.',EAC:'Find cost efficiency first, save that index as a new tile, then use the full project budget.',ETC:'Forecast the total completion cost using current cost efficiency, save it, then subtract what has already been spent.',VAC:'Find the estimated total completion cost first, save the result, then compare it with the approved budget.',TCPI:'First find the budgeted work left and the funds still available. Save one intermediate result before dividing them.',PERCENT:'Compute the share of budgeted work already earned, then express it as a percentage using the 100 tile.',DURATION:'Calculate schedule efficiency, save it, then use the original project duration to make the simplified forecast.',EAC_PLANNED:'The original budget covers all the work. Determine the budgeted value of unfinished work, and add it to actual spending.'};
+ const extra=[];
+ let question,sub,answer,formula,level;
+ switch(kind){
+ case 'CV':question='Calculate (CV) Cost Variance';sub='How far is this project over or under its earned-value cost?';answer=ev-ac;formula=`(CV) Cost Variance = (EV) Earned Value − (AC) Actual Cost\n${money(ev)} − ${money(ac)} = ${money(answer)}`;break;
+ case 'SV':question='Calculate (SV) Schedule Variance';sub='Is the project ahead of or behind planned progress?';answer=ev-pv;formula=`(SV) Schedule Variance = (EV) Earned Value − (PV) Planned Value\n${money(ev)} − ${money(pv)} = ${money(answer)}`;break;
+ case 'CPI':question='Calculate (CPI) Cost Performance Index';sub='Find the efficiency of money already spent.';answer=cpi;formula=`(CPI) Cost Performance Index = (EV) Earned Value ÷ (AC) Actual Cost\n${money(ev)} ÷ ${money(ac)} = ${numeric(answer)}`;break;
+ case 'SPI':question='Calculate (SPI) Schedule Performance Index';sub='Compare earned progress to the scheduled plan.';answer=spi;formula=`(SPI) Schedule Performance Index = (EV) Earned Value ÷ (PV) Planned Value\n${money(ev)} ÷ ${money(pv)} = ${numeric(answer)}`;break;
+ case 'EAC':question='Calculate (EAC) Estimate at Completion';sub='Assume the current cost efficiency continues until the project finishes. This takes two steps.';answer=eac;formula=`Step 1: (CPI) Cost Performance Index = (EV) Earned Value ÷ (AC) Actual Cost = ${numeric(cpi)}\nStep 2: (EAC) Estimate at Completion = (BAC) Budget at Completion ÷ (CPI) Cost Performance Index = ${money(bac)} ÷ (${ev} / ${ac}) = ${money(eac)}`;break;
+ case 'ETC':question='Calculate (ETC) Estimate to Complete';sub='Assume current cost efficiency continues. Find the additional spending still required.';answer=etc;formula=`Step 1: (CPI) Cost Performance Index = ${money(ev)} ÷ ${money(ac)} = ${numeric(cpi)}\nStep 2: (EAC) Estimate at Completion = ${money(bac)} ÷ (${ev} / ${ac}) = ${money(eac)}\nStep 3: (ETC) Estimate to Complete = ${money(eac)} − ${money(ac)} = ${money(etc)}`;break;
+ case 'VAC':question='Calculate (VAC) Variance at Completion';sub='Assume cost efficiency remains unchanged. Predict how far the final cost will differ from the approved budget.';answer=vac;formula=`Step 1: (CPI) Cost Performance Index = ${money(ev)} ÷ ${money(ac)} = ${numeric(cpi)}\nStep 2: (EAC) Estimate at Completion = ${money(bac)} ÷ (${ev} / ${ac}) = ${money(eac)}\nStep 3: (VAC) Variance at Completion = ${money(bac)} − ${money(eac)} = ${money(vac)}`;break;
+ case 'TCPI':question='Calculate (TCPI) To-Complete Performance Index';sub='Find the required efficiency to finish within the original (BAC) Budget at Completion.';answer=(bac-ev)/(bac-ac);formula=`Step 1: Remaining budgeted work = (BAC) Budget at Completion − (EV) Earned Value = ${money(bac-ev)}\nStep 2: Remaining allowable cost = (BAC) Budget at Completion − (AC) Actual Cost = ${money(bac-ac)}\nStep 3: (TCPI) To-Complete Performance Index = ${money(bac-ev)} ÷ ${money(bac-ac)} = ${numeric(answer)}`;break;
+ case 'PERCENT':question='Calculate percentage of budgeted work earned';sub='Give your answer as a percentage number (for example, 65 means 65%).';answer=(ev/bac)*100;extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});formula=`Percentage earned = [(EV) Earned Value ÷ (BAC) Budget at Completion] × 100\n(${money(ev)} ÷ ${money(bac)}) × 100 = ${numeric(answer)}%`;break;
+ case 'DURATION':question='Forecast project duration';sub='Use original duration ÷ (SPI) Schedule Performance Index. This is a simplified forecast, not a critical-path schedule.';answer=month/spi;extra.push({id:'MONTH',value:month,label:TERMS.MONTH,unit:'plain'});formula=`Step 1: (SPI) Schedule Performance Index = ${money(ev)} ÷ ${money(pv)} = ${numeric(spi)}\nStep 2: Forecast duration = ${month} ÷ (${ev} / ${pv}) = ${numeric(answer)} months`;break;
+ case 'EAC_PLANNED':question='Calculate (EAC) Estimate at Completion';sub='Assume all remaining work will be completed at its originally budgeted cost, regardless of past overspending.';answer=ac+(bac-ev);formula=`Step 1: Budgeted cost of remaining work = (BAC) Budget at Completion − (EV) Earned Value = ${money(bac-ev)}\nStep 2: (EAC) Estimate at Completion = (AC) Actual Cost + remaining budgeted cost = ${money(ac)} + ${money(bac-ev)} = ${money(answer)}`;break;
+ }
+ const plain=['CPI','SPI','TCPI','PERCENT','DURATION'].includes(kind);
+ const tier=['CV','SV','CPI','SPI'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED'].includes(kind)?'INTERMEDIATE':'ADVANCED';
+ const tiles=Object.keys(vals).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
+ return {kind,question,sub,answer,formula,hint:hints[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac};
+}
+let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0;
+function pickKind(){let n=stats.attempted;
+ if(n===0)return 'CV';if(n===1)return 'SV';if(n===2)return 'CPI';if(n===3)return 'SPI';
+ const rotation=['EAC','ETC','VAC','TCPI','PERCENT','DURATION','EAC_PLANNED','CV','SPI','SV','CPI'];
+ return rotation[(n-4)%rotation.length];
+}
+function next(){problem=build(pickKind());stats.attempted++;persist();memory=[];slots={left:null,op:null,right:null};selected='left';solved=false;attempts=0;
+ $('question-counter').textContent='CHALLENGE '+String(stats.attempted).padStart(2,'0');$('difficulty').textContent=problem.tier;
+ $('question').textContent=problem.question;$('question-sub').textContent=problem.sub;
+ $('scenario').textContent='An application development project has the values listed below. Use any appropriate inputs to calculate the requested result.';
+ $('score').textContent=stats.solved;
+ $('feedback').className='feedback hidden';$('feedback').textContent='';$('solution').hidden=true;$('solution').textContent='';$('reveal').textContent='Show worked solution';$('hint').textContent='Show hint';$('next').disabled=true;
+ render(); $('challenge').classList.remove('fade');void $('challenge').offsetWidth;$('challenge').classList.add('fade');window.scrollTo({top:0,behavior:'smooth'});
+}
+function lookup(id){return [...problem.tiles,...memory].find(t=>t.id===id)}
+function renderTiles(){const parent=$('tiles');parent.innerHTML='';for(const t of [...problem.tiles,...memory]){
+  const b=document.createElement('button');b.type='button';b.className='tile'+(t.id.startsWith('MEM')?' computed':'');b.setAttribute('data-id',t.id);b.setAttribute('aria-label',t.label+': '+numberType(t.unit,t.value));
+  const small=document.createElement('span');small.className='tilelabel';small.textContent=t.label;
+  const big=document.createElement('strong');big.textContent=numberType(t.unit,t.value);
+  b.append(small,big);parent.append(b);hookDrag(b,{kind:'number',id:t.id});
+}}
+function inferUnit(left,right,op){if(op==='+'||op==='-')return left.unit==='money'||right.unit==='money'?'money':'plain';if(op==='*')return left.unit==='money'||right.unit==='money'?'money':'plain';if(op==='/')return left.unit==='money'&&right.unit==='money'?'plain':left.unit==='money'?'money':'plain';return 'plain'}
+function calculate(){let a=slots.left?lookup(slots.left):null,b=slots.right?lookup(slots.right):null;if(!a||!b||!slots.op)return null;
+ let v;switch(slots.op){case '+':v=a.value+b.value;break;case '-':v=a.value-b.value;break;case '*':v=a.value*b.value;break;case '/':v=b.value===0?NaN:a.value/b.value;break;default:return null;}
+ return Number.isFinite(v)?{value:v,unit:inferUnit(a,b,slots.op)}:null}
+function render(){renderTiles();for(const slot of ['left','op','right']){
+ let b=$('slot-'+slot);b.classList.toggle('active',selected===slot);b.classList.toggle('filled',!!slots[slot]);
+ const tag=b.querySelector('strong');const small=b.querySelector('small');
+ if(slot==='op'){tag.textContent=({'+':'+','-':'−','*':'×','/':'÷'})[slots.op]||'?';small.textContent='OPERATOR';}
+ else{let t=slots[slot]&&lookup(slots[slot]);tag.textContent=t?numberType(t.unit,t.value):'Drop here';small.textContent=t?t.label:slot==='left'?'FIRST NUMBER':'SECOND NUMBER';}
+ }
+ for(const b of document.querySelectorAll('.op'))b.classList.toggle('selected',slots.op===b.dataset.op);
+ let result=calculate();$('result').textContent=result?numberType(result.unit,result.value):'—';$('result-type').textContent=result?(result.unit==='money'?'Monetary result':'Number / index'):'Fill all three slots';
+ $('save').disabled=!result||solved||memory.length>=10;$('check').disabled=!result||solved;
+}
+function writeToken(token,slot){if(solved)return;
+ if(token.kind==='operator'){
+ if(slot&&slot!=='op')return;
+ slots.op=token.id; selected=slots.left?(slots.right?'op':'right'):'left';
+ }else{
+ if(slot==='op')return;
+ let dest=(slot==='left'||slot==='right')?slot:(selected==='left'||selected==='right'?selected:(!slots.left?'left':'right'));
+ slots[dest]=token.id;selected=dest==='left'?'right':!slots.op?'op':'left';
+ }
+ $('feedback').classList.add('hidden');render();
+}
+function hookDrag(el,token){el.addEventListener('click',()=>{if(el.dataset.wasDragged==='1'){el.dataset.wasDragged='';return;}writeToken(token,null)});
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();writeToken(token,null)}});
+ el.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;
+ let startX=e.clientX,startY=e.clientY,ghost=null,moved=false,last=null;const pointerId=e.pointerId;
+ function createGhost(){ghost=document.createElement('div');ghost.className='dragghost';ghost.textContent=token.kind==='operator'?({'+':'+','-':'−','*':'×','/':'÷'})[token.id]:numberType(lookup(token.id).unit,lookup(token.id).value);document.body.appendChild(ghost);}
+ function move(ev){if(ev.pointerId!==pointerId)return;let dx=ev.clientX-startX,dy=ev.clientY-startY;if(!moved&&Math.hypot(dx,dy)>10){moved=true;createGhost()};if(moved){ev.preventDefault();ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('.drop').forEach(x=>x.classList.remove('over'));let elem=document.elementFromPoint(ev.clientX,ev.clientY);let zone=elem&&elem.closest('.drop');if(zone){if((token.kind==='operator')===(zone.dataset.slot==='op'))zone.classList.add('over');}}}
+ function end(ev){if(ev.pointerId!==pointerId)return;document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',end);document.removeEventListener('pointercancel',cancel);document.querySelectorAll('.drop').forEach(x=>x.classList.remove('over'));if(ghost)ghost.remove();if(moved){el.dataset.wasDragged='1';setTimeout(()=>{el.dataset.wasDragged=''},120);let elem=document.elementFromPoint(ev.clientX,ev.clientY);let zone=elem&&elem.closest('.drop');if(zone)writeToken(token,zone.dataset.slot);else if(ev.target&&ev.target.closest&&ev.target.closest('#workbench'))writeToken(token,null);}}
+ function cancel(ev){if(ev.pointerId!==pointerId)return;document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',end);document.removeEventListener('pointercancel',cancel);document.querySelectorAll('.drop').forEach(x=>x.classList.remove('over'));if(ghost)ghost.remove();}
+ document.addEventListener('pointermove',move,{passive:false});document.addEventListener('pointerup',end);document.addEventListener('pointercancel',cancel);
+ });}
+for(const b of document.querySelectorAll('.op'))hookDrag(b,{kind:'operator',id:b.dataset.op});
+for(const b of document.querySelectorAll('.drop'))b.addEventListener('click',()=>{const slot=b.dataset.slot;if(slots[slot])slots[slot]=null;selected=slot;render();});
+$('save').addEventListener('click',()=>{const calc=calculate();if(!calc||solved)return;const id='MEM'+(memory.length+1);memory.push({id,label:'Saved intermediate result '+(memory.length+1),unit:calc.unit,value:calc.value});slots={left:null,op:null,right:null};selected='left';render();$('feedback').className='feedback';$('feedback').textContent='Saved! Drag the new green number tile into your next calculation.';});
+$('check').addEventListener('click',()=>{let result=calculate();if(!result||solved)return;attempts++;let tolerance=Math.max(0.000001,Math.abs(problem.answer)*0.000001);const correct=Math.abs(result.value-problem.answer)<=tolerance;
+ if(correct){solved=true;stats.solved++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);persist();$('score').textContent=stats.solved;$('feedback').className='feedback good';$('feedback').textContent='✓ Correct! '+numberType(problem.unit,problem.answer)+(problem.kind==='PERCENT'?'%':problem.kind==='DURATION'?' months':'')+'. '+(attempts===1?'Solved on your first try. ':'')+'Ready for the next challenge?';$('next').disabled=false;}
+ else{stats.streak=0;persist();$('feedback').className='feedback bad';$('feedback').textContent='Not quite. Your expression equals '+numberType(result.unit,result.value)+'. You can replace the numbers or operator and try again. Use a hint or save an intermediate result if this needs multiple steps.';}
+ render();});
+$('next').addEventListener('click',next);$('skip').addEventListener('click',()=>{stats.streak=0;persist();next()});
+$('reset').addEventListener('click',()=>{slots={left:null,op:null,right:null};selected='left';$('feedback').className='feedback hidden';render()});
+$('hint').addEventListener('click',()=>{if($('hint').textContent==='Hide hint'){$('feedback').className='feedback hidden';$('hint').textContent='Show hint';return;}$('feedback').className='feedback';$('feedback').textContent='Hint: '+problem.hint;$('hint').textContent='Hide hint'});
+$('reveal').addEventListener('click',()=>{const el=$('solution');el.hidden=!el.hidden;if(!el.hidden)el.textContent=problem.formula;$('reveal').textContent=el.hidden?'Show worked solution':'Hide worked solution'});
+$('restart').addEventListener('click',()=>{if(!confirm('Reset your score and restart from challenge 1?'))return;stats={solved:0,attempted:0,streak:0,best:0};persist();next()});
+next();
+})();
+</script>
+</body>
+</html>
