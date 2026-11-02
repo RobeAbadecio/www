@@ -113,10 +113,72 @@ function build(kind){
  case 'PERCENT':question='Calculate percentage of budgeted work earned';sub='Give your answer as a percentage number (for example, 65 means 65%).';answer=(ev/bac)*100;extra.push({id:'HUNDRED',value:100,label:'Percentage multiplier',unit:'plain'});formula=`Percentage earned = [(EV) Earned Value ÷ (BAC) Budget at Completion] × 100\n(${money(ev)} ÷ ${money(bac)}) × 100 = ${numeric(answer)}%`;break;
  case 'DURATION':question='Forecast project duration';sub='Use original duration ÷ (SPI) Schedule Performance Index. This is a simplified forecast, not a critical-path schedule.';answer=month/spi;extra.push({id:'MONTH',value:month,label:TERMS.MONTH,unit:'plain'});formula=`Step 1: (SPI) Schedule Performance Index = ${money(ev)} ÷ ${money(pv)} = ${numeric(spi)}\nStep 2: Forecast duration = ${month} ÷ (${ev} / ${pv}) = ${numeric(answer)} months`;break;
  case 'EAC_PLANNED':question='Calculate (EAC) Estimate at Completion';sub='Assume all remaining work will be completed at its originally budgeted cost, regardless of past overspending.';answer=ac+(bac-ev);formula=`Step 1: Budgeted cost of remaining work = (BAC) Budget at Completion − (EV) Earned Value = ${money(bac-ev)}\nStep 2: (EAC) Estimate at Completion = (AC) Actual Cost + remaining budgeted cost = ${money(ac)} + ${money(bac-ev)} = ${money(answer)}`;break;
+
+ case 'REMAINING_WORK':
+  question='Calculate remaining budgeted work';sub='How much value of the original approved budget is not yet earned?';
+  answer=bac-ev;formula='Remaining budgeted work = (BAC) Budget at Completion − (EV) Earned Value\n'+money(bac)+' − '+money(ev)+' = '+money(answer);break;
+ case 'REMAINING_FUNDS':
+  question='Calculate unspent funds under the original budget';sub='How much of the approved budget has not yet been spent?';
+  answer=bac-ac;formula='Remaining approved funds = (BAC) Budget at Completion − (AC) Actual Cost\n'+money(bac)+' − '+money(ac)+' = '+money(answer);break;
+ case 'ETC_PLANNED':
+  question='Calculate (ETC) Estimate to Complete';sub='Assume all unfinished work can be completed at its original planned cost.';
+  answer=bac-ev;formula='(ETC) Estimate to Complete = (BAC) Budget at Completion − (EV) Earned Value\n'+money(bac)+' − '+money(ev)+' = '+money(answer);break;
+ case 'VAC_PLANNED':
+  question='Calculate (VAC) Variance at Completion';sub='Assume unfinished work will follow its original budget, regardless of past cost performance.';
+  answer=ev-ac;formula='Step 1: (EAC) Estimate at Completion = (AC) Actual Cost + [(BAC) Budget at Completion − (EV) Earned Value] = '+money(ac+bac-ev)+'\nStep 2: (VAC) Variance at Completion = (BAC) Budget at Completion − (EAC) Estimate at Completion = '+money(answer);break;
+ case 'TCPI_REVISED':{
+  const target=ac+Math.round((bac-ev)*r(80,145)/100/10000)*10000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (TCPI) To-Complete Performance Index';sub='Use the revised (EAC) Estimate at Completion cost target. Do not use the original total budget as the remaining spending allowance.';
+  answer=(bac-ev)/(target-ac);formula='Step 1: Remaining budgeted work = '+money(bac)+' − '+money(ev)+' = '+money(bac-ev)+'\nStep 2: Remaining spending allowance = '+money(target)+' − '+money(ac)+' = '+money(target-ac)+'\nStep 3: (TCPI) To-Complete Performance Index = '+money(bac-ev)+' ÷ '+money(target-ac)+' = '+numeric(answer);break;
  }
- const plain=['CPI','SPI','TCPI','PERCENT','DURATION'].includes(kind);
+ case 'EAC_ASSESSED':{
+  const forecastRemaining=r(5,17)*100000;
+  extra.push({id:'ASSESSED_ETC',value:forecastRemaining,label:'Reassessed (ETC) Estimate to Complete',unit:'money'});
+  question='Calculate (EAC) Estimate at Completion';sub='The project manager has prepared a bottom-up reassessment of the remaining work. Calculate the total projected cost.';
+  answer=ac+forecastRemaining;formula='(EAC) Estimate at Completion = (AC) Actual Cost + reassessed (ETC) Estimate to Complete\n'+money(ac)+' + '+money(forecastRemaining)+' = '+money(answer);break;
+ }
+ case 'ETC_REVISED':{
+  const target=ac+r(5,18)*100000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (ETC) Estimate to Complete';sub='Given the new full-project cost forecast, how much more will be spent to finish?';
+  answer=target-ac;formula='(ETC) Estimate to Complete = revised (EAC) Estimate at Completion − (AC) Actual Cost\n'+money(target)+' − '+money(ac)+' = '+money(answer);break;
+ }
+ case 'VAC_REVISED':{
+  const target=ac+r(5,18)*100000;
+  extra.push({id:'TARGET',value:target,label:'Revised (EAC) Estimate at Completion',unit:'money'});
+  question='Calculate (VAC) Variance at Completion';sub='Using the newly approved total cost forecast, calculate the predicted difference from the approved budget.';
+  answer=bac-target;formula='(VAC) Variance at Completion = (BAC) Budget at Completion − revised (EAC) Estimate at Completion\n'+money(bac)+' − '+money(target)+' = '+money(answer);break;
+ }
+ case 'EV_FROM_CV':{
+  const variance=ev-ac;
+  extra.push({id:'GIVEN_CV',value:variance,label:'Given (CV) Cost Variance',unit:'money'});
+  question='Find missing (EV) Earned Value';sub='The earned value figure is hidden. Recover it using the actual spending and signed cost variance.';
+  answer=ac+variance;formula='(EV) Earned Value = (AC) Actual Cost + (CV) Cost Variance\n'+money(ac)+' + ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'AC_FROM_CV':{
+  const variance=ev-ac;
+  extra.push({id:'GIVEN_CV',value:variance,label:'Given (CV) Cost Variance',unit:'money'});
+  question='Find missing (AC) Actual Cost';sub='The spending figure is hidden. Calculate it from earned value and the signed cost variance.';
+  answer=ev-variance;formula='(AC) Actual Cost = (EV) Earned Value − (CV) Cost Variance\n'+money(ev)+' − ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'EV_FROM_SV':{
+  const variance=ev-pv;
+  extra.push({id:'GIVEN_SV',value:variance,label:'Given (SV) Schedule Variance',unit:'money'});
+  question='Find missing (EV) Earned Value';sub='Recover the earned value using planned value and signed schedule variance.';
+  answer=pv+variance;formula='(EV) Earned Value = (PV) Planned Value + (SV) Schedule Variance\n'+money(pv)+' + ('+money(variance)+') = '+money(answer);break;
+ }
+ case 'PV_FROM_SV':{
+  const variance=ev-pv;
+  extra.push({id:'GIVEN_SV',value:variance,label:'Given (SV) Schedule Variance',unit:'money'});
+  question='Find missing (PV) Planned Value';sub='Recover the planned value using earned value and signed schedule variance.';
+  answer=ev-variance;formula='(PV) Planned Value = (EV) Earned Value − (SV) Schedule Variance\n'+money(ev)+' − ('+money(variance)+') = '+money(answer);break;
+ }
+ }
+ const plain=['CPI','SPI','TCPI','TCPI_REVISED','PERCENT','DURATION'].includes(kind);
  const tier=['CV','SV','CPI','SPI'].includes(kind)?'FOUNDATION':['EAC','PERCENT','DURATION','EAC_PLANNED'].includes(kind)?'INTERMEDIATE':'ADVANCED';
- const tiles=Object.keys(vals).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
+ const hidden={EV_FROM_CV:['EV'],AC_FROM_CV:['AC'],EV_FROM_SV:['EV'],PV_FROM_SV:['PV']};
+ const tiles=Object.keys(vals).filter(id=>!(hidden[kind]||[]).includes(id)).map(id=>({id,value:vals[id],label:TERMS[id],unit:'money'})).concat(extra);
  return {kind,question,sub,answer,formula,hint:hints[kind],tier,tiles,unit:plain?'plain':'money',bac,pv,ev,ac};
 }
 let problem=null, memory=[],slots={left:null,op:null,right:null},selected='left',solved=false,attempts=0,history=[],seen=[];
@@ -129,7 +191,7 @@ try{const v=JSON.parse(localStorage.getItem('eva-reviewer-session-v3')||'null');
   seen=Array.isArray(v.seen)?v.seen.slice(-1500):[];
  }
 }catch(_e){}
-const allKinds=['CV','SV','CPI','SPI','EAC','ETC','VAC','TCPI','PERCENT','DURATION','EAC_PLANNED'];
+const allKinds=['CV','SV','CPI','SPI','REMAINING_WORK','REMAINING_FUNDS','EV_FROM_CV','AC_FROM_CV','EV_FROM_SV','PV_FROM_SV','EAC','EAC_PLANNED','ETC_PLANNED','ETC','VAC','VAC_PLANNED','PERCENT','DURATION','TCPI','TCPI_REVISED','EAC_ASSESSED','ETC_REVISED','VAC_REVISED'];
 function pickKind(){
  const count=stats.attempted;
  if(count<allKinds.length)return allKinds[count];
